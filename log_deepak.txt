@@ -13,4 +13,8 @@ Linux Security Cookbook
 20-8-2015
 _________
 Reading Understanding Linux Kernel Network Internals and RFC 4960.
+Send and receive buffers are concerned with the socket structure.
+So attacking socket structure :)
+struct sk_buff represents a packet.
+Send and receive buffers are the sk_buff lists.
 
