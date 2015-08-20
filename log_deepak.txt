@@ -1,0 +1,16 @@
+18-8-2015
+_________
+
+Read and understood congestion control in TCP.
+
+19-8-2015
+_________
+Started reading RFC 4960.Took some books from the library:
+Linux Kernel Dev by Robert Love
+Linux Device Drivers - Hart
+Linux Security Cookbook
+
+20-8-2015
+_________
+Reading Understanding Linux Kernel Network Internals and RFC 4960.
+
