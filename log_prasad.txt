@@ -1,0 +1,7 @@
+17/08/2015
+Started reading RFC 4960
+
+18/08/2016
+Wrote a simple SCTP client-server program
+
+
