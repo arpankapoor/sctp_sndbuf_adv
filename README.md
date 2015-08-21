@@ -10,4 +10,7 @@ Final year BTech project @ NITC
 [ ] Read send buffer advertisement RFC
 
 
-[ ] Linux Kernel
+[ ] Linux Kernel (Get the sources if you have not already)
+##Bulletin Board
+
+No need to recompile the kernel or reboot everytime we change sctp. It's a module.
