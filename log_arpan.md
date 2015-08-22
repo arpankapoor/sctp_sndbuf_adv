@@ -15,3 +15,12 @@ Started reading RFC 793 - Transmission Control Protocol.
 
 - Completed reading RFC 3286 - An Introduction to the Stream Control Transmission Protocol (SCTP).
 - Wrote multi-streaming SCTP client and server in Linux using lksctp-tools.
+
+
+2015-08-21
+----------
+
+- Read chapter 1 of Understanding Linux Network Internals
+- Tools to help browse kernel code:
+  - cscope
+  - ctags
