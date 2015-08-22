@@ -18,3 +18,9 @@ So attacking socket structure :)
 struct sk_buff represents a packet.
 Send and receive buffers are the sk_buff lists.
 
+21-8-2015
+_________
+Modified the sctp module to print a message every time it is loaded :P.
+Insmoded it and it works.
+Watching a video on sctp https://www.youtube.com/watch?v=9YBRNOTRHV0
+ULP -- Upper layer protocol.
