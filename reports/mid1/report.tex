@@ -1,29 +1,54 @@
 \documentclass[a4paper,11pt,twocolumn]{article}
+\usepackage[english]{babel}
+\usepackage[backend=biber]{biblatex}
+\usepackage{csquotes}
 \usepackage[top=1.2in, bottom=1in, left=1.4in, right=1.4in]{geometry}
-\usepackage{algorithmic}
-\usepackage{algorithm}
+\usepackage{hyperref}
 
-\title{Sendbuffer Advertisement in SCTP\\
-	{\normalsize CS4089 Project
-		\\Midterm Report}}
+\addbibresource{ref.bib}
 
-\author{Arpan Kapoor, Deepak Sirone J, K Prasad Krishnan
-	\\Guided By: Dr. Vinod Pathari}
+\hypersetup{
+	hidelinks,
+	pdftitle={SCTP Sendbuffer Advertising},
+	pdfauthor={Arpan Kapoor, Deepak Sirone J, K Prasad Krishnan},
+	pdfsubject={Midterm Report},
+}
+
+
+\title{SCTP Sendbuffer Advertising\\
+	{\normalsize CS4089 Project\\
+		Midterm Report}}
+
+\author{Arpan Kapoor, Deepak Sirone J, K Prasad Krishnan\\
+	Guided By: Dr.~Vinod Pathari}
 
 \begin{document}
 
 \maketitle
 
 \section{Introduction}
+Stream Control Transport Protocol (SCTP) is a reliable transport protocol
+designed to transport Public Switched Telephone Network (PSTN) signaling
+messages over IP networks, but is capable of broader applications.
+
 \section{Problem Statement}
-\section{Literature Survey }
+To study the effects of advertising sendbuffer occupancy in SCTP. This
+information allows networks to discern between application-limited,
+network-limited and flow-control limited flows, creating new avenues of network
+optimization.
+
+\section{Literature Survey}
+RFC 3286 \cite{rfc3286} provides a high level introduction to the capabilities
+supported by SCTP, while RFC 4960 \cite{rfc4960} describes the complete
+protocol. Agache and Raiciu \cite{tcp-sndbufadv} propose a scheme to advertise
+sendbuffer occupancy in TCP.
+
 \section{Work Done}
+Wrote a file transfer utility that uses SCTP as the transport protocol to
+measure the fluctuations in the sendbuffer size.
+
 \section{Future Work}
 
-\begin{thebibliography}{}
-\bibitem{much}
-Steven Muchnik. \textit{Advanced Compiler Implementation}, Morgan Kauffman Publishers, 1997.
-\bibitem{sumit}
-Sumit Gulwani and George C Necula. A polynomial time Algorithm for Global Value Numbering, \textit{Science of Computer Programming}, 64(1):97-114, January 2007.
-\end{thebibliography}{}
+\printbibliography
+
 \end{document}
