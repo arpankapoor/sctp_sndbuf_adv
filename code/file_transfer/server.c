@@ -1,10 +1,7 @@
 #include "common.h"
 #define QLEN 10
 
-extern int readn(int, void *, size_t);
-extern int writen(int, void *, size_t);
-
-int
+static int
 initserver(int type, int protocol, const struct sockaddr *addr,
 		socklen_t alen, int qlen)
 {
@@ -30,13 +27,12 @@ errout:
 	return -1;
 }
 
-void
+static void
 send_file(int sockfd, int fd)
 {
 	ssize_t read;
 	char buf[BUFLEN];
 
-	printf("%zu\n", sizeof buf);
 	while ((read = readn(fd, buf, BUFLEN)) > 0)
 		if (writen(sockfd, buf, read) < 0)
 			perror("write");
@@ -94,6 +90,6 @@ errout:
 	if (fd != -1) close(fd);
 	if (sockfd != -1) close(sockfd);
 	if (clfd != -1) close(clfd);
-	
+
 	return ret;
 }

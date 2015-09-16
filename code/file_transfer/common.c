@@ -51,3 +51,18 @@ writen(int fd, void *ptr, size_t n)
 
 	return (n - nleft);	/* return >= 0 */
 }
+
+
+/* Set the SCTP stream parameters */
+int
+set_sctp_stream_params(int sockfd, int num_ostreams, int max_instreams)
+{
+	struct sctp_initmsg initmsg;
+
+	memset(&initmsg, 0, sizeof initmsg);
+	initmsg.sinit_num_ostreams = num_ostreams;
+	initmsg.sinit_max_instreams = max_instreams;
+
+	return setsockopt(sockfd, IPPROTO_SCTP, SCTP_INITMSG,
+			&initmsg, sizeof initmsg);
+}
