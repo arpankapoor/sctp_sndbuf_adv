@@ -1,98 +1,99 @@
-% Copyright 2007 by Till Tantau
-%
-% This file may be distributed and/or modified
-%
-% 1. under the LaTeX Project Public License and/or
-% 2. under the GNU Public License.
-%
-% See the file doc/licenses/LICENSE for more details.
-
 \documentclass{beamer}
+\usepackage[english]{babel}
+\usepackage[backend=biber]{biblatex}
+\usepackage{csquotes}
 \setbeamertemplate{bibliography item}[text]
-\title{SCTP Sendbuffer Advertising\\ {\normalsize CS4089 Project\\Midterm Evaluation}}
-\author{Arpan Kapoor, Deepak Sirone J, K Prasad Krishnan\\Guided By: Dr. Vinod Pathari}
+
+\addbibresource{../../references.bib}
+
+\title{SCTP Sendbuffer Advertising}
+\subtitle{CS4089 Project\\
+	Midterm Evaluation}
+
+\author{Arpan Kapoor, Deepak Sirone J, K Prasad Krishnan\\
+	Guided By: Dr.~Vinod Pathari}
+
 \date{September 18, 2015}
+
 \begin{document}
 
 \begin{frame}
-  \titlepage
+	\titlepage
 \end{frame}
 
 \begin{frame}{Outline}
-  \tableofcontents
+	\tableofcontents
 \end{frame}
+
 \section{Introduction}
-\begin{frame}{Introduction}
+\begin{frame}{\insertsection}
+
 \begin{itemize}
- \item Stream Control Transmission Protocol(SCTP):
-\begin{itemize}
- \item is designed to transport Public Switched Telephone Network (PSTN) signaling messages
-   over IP networks, but is capable of broader applications.
+	\item Stream Control Transmission Protocol (SCTP):
+	\begin{itemize}
+		\item is designed to transport Public Switched Telephone
+			Network (PSTN) signaling messages over IP networks, but
+			is capable of broader applications.
+	\end{itemize}
+	\begin{itemize}
+		\item the next generation transport protocol which aims to
+			remove several limitations of TCP.
+	\end{itemize}
 \end{itemize}
+
 \begin{itemize}
- \item the next generation transport protocol which aims to remove several limitations of TCP
-\end{itemize}
-\end{itemize}
-\begin{itemize}
- \item Sendbuffer Advertising:
-\begin{itemize}
- \item each segment will carry the amount of backlogged data present in the sender's
-   buffer   
-\end{itemize}
+	\item Sendbuffer Advertising:
+	\begin{itemize}
+		\item each segment will carry the amount of backlogged data
+			present in the sender's buffer.
+	\end{itemize}
 \end{itemize}
 
 \end{frame}
 
 \section{Problem Statement}
-\begin{frame}{Problem Statement}
+\begin{frame}{\insertsection}
 \begin{itemize}
- \item To study the effects of advertising send-buffer occupancy in SCTP. 
-This information allows networks to discern between application-limited, network-limited and flow-control limited flows, creating new avenues of network optimization.
+	\item To study the effects of advertising sendbuffer occupancy in SCTP.
+		This information allows networks to discern between
+		application-limited, network-limited and flow-control limited
+		flows, creating new avenues of network optimization.
 \end{itemize}
 \end{frame}
 
-\section{Literature Survey }
-\begin{frame}{Literature Survey }
+\section{Literature Survey}
+\begin{frame}{\insertsection}
 \begin{itemize}
-\item RFC 3286 \cite{much} provides a high level introduction to the capabilities supported by
-SCTP . 
-\item RFC 4960 \cite{sumit} describes the complete protocol
-\item Agache and Raiciu \cite{aga} propose a scheme to advertise send-
-buffer occupancy in TCP.
+	\item RFC 3286 \cite{rfc3286} provides a high level introduction to the
+		capabilities supported by SCTP.
+	\item RFC 4960 \cite{rfc4960} describes the complete protocol.
+	\item Agache and Raiciu \cite{tcp-sndbufadv} propose a scheme to
+		advertise sendbuffer occupancy in TCP.
 \end{itemize}
 \end{frame}
+
 \section{Work Done}
-\begin{frame}{Work Done}
+\begin{frame}{\insertsection}
 \begin{itemize}
- \item Completed a part of the planned literature survey
- \item Wrote a file transfer utility that uses SCTP as the transport protocol to measure the fluctuations in the sendbuffer size.
+	\item Completed a part of the planned literature survey.
+	\item Wrote a file transfer utility that uses SCTP as the transport
+		protocol to measure the fluctuations in the sendbuffer size.
 \end{itemize}
 \end{frame}
 
 \section{Future Work}
-\begin{frame}{Future Work}
+\begin{frame}{\insertsection}
 \begin{itemize}
-\item To design a working prototype of sendbuffer advertising for SCTP in the Linux
-kernel and test it in a simulated network.
- \item Security implications of the prototype will also be studied.
- 
+	\item To design a working prototype of sendbuffer advertising for SCTP
+		in the Linux kernel and test it in a simulated network.
+	\item Security implications of the prototype will also be studied.
 \end{itemize}
 \end{frame}
 
-
 \section{References}
-
 \begin{frame}[allowframebreaks]
-  \frametitle<presentation>{References}   
-
-\begin{thebibliography}{100}
-\bibitem{aga}
-A. Agache and C. Raiciu.\textit{TCP Sendbuffer Advertising}.Internet-Draft draft-agache-tcpm-sndbufadv-00.txt.IETF Secretariat, July 20, 2015.
-\bibitem{much}
-L. Ong and J. Yoakum. \textit{An Introduction to the Stream Control Transmission Protocol (SCTP)}.RFC 3286. RFC Editor, May 2002,pp. 1–10.\newline url: http://www.rfc-editor.org/rfc/rfc3286.txt.
-\bibitem{sumit}
-R. Stewart. \textit{Stream Control Transmission Protocol}. RFC 4960. RFCEditor, Sept. 2007, pp. 1–152. \newline url: http : //www.rfc-editor.org/rfc/rfc4960.txt.
-\end{thebibliography}{}
+\frametitle<presentation>{\insertsection}
+\printbibliography
 \end{frame}
-\end{document}
 
+\end{document}
