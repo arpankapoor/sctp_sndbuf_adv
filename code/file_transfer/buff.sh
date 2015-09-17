@@ -13,7 +13,7 @@ addnums() {
 }
 
 main() {
-	echo -e "secs\t\ttxq\tsndbuff"
+	echo -e "secs\t\ttxq\t\trxq\t\tsndbuff"
 
 	while true
 	do
@@ -22,6 +22,10 @@ main() {
 			tr -s " ")
 
 		txq=$(echo "$assocs" | \
+			cut -d " " -f 8 | \
+			addnums)
+
+		rxq=$(echo "$assocs" | \
 			cut -d " " -f 9 | \
 			addnums)
 
@@ -35,7 +39,7 @@ main() {
 
 		if [[ !($txq -eq 0 && $sndbuff -eq 0) ]]
 		then
-			echo -e "$secs\t$txq\t$sndbuff"
+			echo -e "$secs\t$txq\t\t$rxq\t\t$sndbuff"
 		fi
 	done
 }
