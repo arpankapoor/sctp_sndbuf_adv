@@ -24,3 +24,16 @@ Modified the sctp module to print a message every time it is loaded :P.
 Insmoded it and it works.
 Watching a video on sctp https://www.youtube.com/watch?v=9YBRNOTRHV0
 ULP -- Upper layer protocol.
+
+24-8-2015
+_________
+sendbuf_used -- The size of the send buffer used in the association (asoc), struct sctp_association in sctp/structs.h
+Writing an sctp program which can send large files across.
+
+17-8-2015
+_________
+Back!
+Firewalls cause SCTP problems!
+Trying to replicate Arpan's Raspberry Pi configuration or kill the firewall altogether.
+Called Anil Sir Today! There is a tool called tc which can be used to limit bandwidth. Testing it out!
+
