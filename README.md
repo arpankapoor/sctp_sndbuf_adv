@@ -28,3 +28,6 @@ Future direction -> out_qlen...what does it do?
 
 
 Sir suggested a new tool tc, which can be used to limit network bandwidth. Looking into it.
+
+Killing the firewall systemctl stop firewalld.services , causes SCTP to run properly.
+
