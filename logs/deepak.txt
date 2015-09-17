@@ -37,3 +37,4 @@ Firewalls cause SCTP problems!
 Trying to replicate Arpan's Raspberry Pi configuration or kill the firewall altogether.
 Called Anil Sir Today! There is a tool called tc which can be used to limit bandwidth. Testing it out!
 
+Killed the firewall and the connection problem is resolved now.
