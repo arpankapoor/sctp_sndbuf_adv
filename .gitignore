@@ -4,7 +4,9 @@
 *.blg
 *.lof
 *.log
+*.nav
 *.out
 *.o
 *.run.xml
+*.snm
 *.toc

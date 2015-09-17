@@ -1,10 +1,8 @@
 #include "common.h"
-#define MAXSLEEP 128
+#define MAXSLEEP 64
 
-extern int readn(int, void *, size_t);
-extern int writen(int, void *, size_t);
-
-int connect_retry(int domain, int type, int protocol,
+static int
+connect_retry(int domain, int type, int protocol,
 		const struct sockaddr *addr, socklen_t alen)
 {
 	int numsec, fd;
@@ -29,7 +27,7 @@ int connect_retry(int domain, int type, int protocol,
 	return -1;
 }
 
-void
+static void
 rcv_file(int sockfd, int fd)
 {
 	ssize_t read;
@@ -73,7 +71,7 @@ main(int argc, char *argv[])
 		if ((sockfd = connect_retry(aip->ai_family, SOCK_STREAM,
 						IPPROTO_SCTP, aip->ai_addr,
 						aip->ai_addrlen)) < 0) {
-			perror("socket");
+			perror("");
 			fprintf(stderr, "can't connect to %s\n", argv[1]);
 		} else {
 			rcv_file(sockfd, fd);
@@ -85,6 +83,6 @@ main(int argc, char *argv[])
 errout:
 	if (fd != -1) close(fd);
 	if (sockfd != -1) close(sockfd);
-	
+
 	return ret;
 }

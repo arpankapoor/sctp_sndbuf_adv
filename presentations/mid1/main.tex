@@ -1,0 +1,102 @@
+\documentclass{beamer}
+\usepackage[english]{babel}
+\usepackage[backend=biber]{biblatex}
+\usepackage{csquotes}
+\setbeamertemplate{bibliography item}[text]
+
+\addbibresource{../../references.bib}
+
+\title{SCTP Sendbuffer Advertising}
+\subtitle{CS4089 Project\\
+	Midterm Evaluation}
+
+\author{Arpan Kapoor, Deepak Sirone J, K Prasad Krishnan\\
+	Guided By: Dr.~Vinod Pathari}
+
+\begin{document}
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+	\tableofcontents
+\end{frame}
+
+\section{Introduction}
+\begin{frame}{\insertsection}
+\begin{itemize}
+	\item Compiler optimization:
+	\begin{itemize}
+		\item the compilation phase that deals with the generation of
+			better code(code that runs faster and/or takes less
+			space)
+	\end{itemize}
+\end{itemize}
+
+\begin{itemize}
+	\item Program analysis:
+	\begin{itemize}
+		\item to collect the information required for doing
+			optimizations.
+	\end{itemize}
+\end{itemize}
+
+\begin{itemize}
+	\item Constant Propagation Optimization: 
+	\begin{itemize}
+		\item replaces the use of a variable by a constant, if it can
+			be inferred that every definition of the variable that
+			reaches this use assigns the variable the same constant
+			value.
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{Problem Statement}
+\begin{frame}{\insertsection}
+\begin{itemize}
+	\item to do the Constant Propagation optimization in a program in three
+		address code.
+	\begin{itemize}
+		\item requires an analysis to compute the set of variable
+			definitions at every point in the program
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{Literature Survey}
+\begin{frame}{\insertsection}
+\begin{itemize}
+	\item The fundamentals of compiler optimization and data-flow analysis
+		are presented by Muchnik  \cite{rfc3286}.
+	\item Gulwani and Necula \cite{rfc4960} present different techniques
+		for computing equivalent expressions.
+\end{itemize}
+\end{frame}
+
+\section{Work Done}
+\begin{frame}{\insertsection}
+\begin{itemize}
+	\item Completed a part of the planned literature survey
+	\item The data-flow equations have been formulated
+\end{itemize}
+\end{frame}
+
+\section{Future Work}
+\begin{frame}{\insertsection}
+\begin{itemize}
+	\item Complete the literature survey
+	\item Write the data-flow analysis algorithm
+	\item Study the tools required for implementation
+\end{itemize}
+\end{frame}
+
+
+\section{References}
+\begin{frame}[allowframebreaks]
+\frametitle<presentation>{\insertsection}
+\printbibliography
+\end{frame}
+
+\end{document}

@@ -1,29 +1,43 @@
 #!/bin/bash
 
-# very bad hack!
+addnums() {
+	local sum=0
+	while read -r val
+	do
+		if [[ -n $val ]]
+		then
+			sum=$(($sum+$val))
+		fi
+	done
+	echo $sum
+}
 
-echo -e "secs\t\ttxq\tsndbuff"
+main() {
+	echo -e "secs\t\ttxq\tsndbuff"
 
-while true
-do
-	assocs=$(cat /proc/net/sctp/assocs | \
-		tr "\t" " " | \
-		tr -s " ")
+	while true
+	do
+		assocs=$(tail -n +2 /proc/net/sctp/assocs | \
+			tr "\t" " " | \
+			tr -s " ")
 
-	txq=$(echo "$assocs" | \
-		cut -d " " -f 9 | \
-		sed "/TX_QUEUE/d")
+		txq=$(echo "$assocs" | \
+			cut -d " " -f 9 | \
+			addnums)
 
-	sndbuff=$(echo "$assocs" | \
-		rev | \
-		cut -d " " -f 2 | \
-		rev | \
-		sed "/sndbuf/d")
+		sndbuff=$(echo "$assocs" | \
+			rev | \
+			cut -d " " -f 2 | \
+			rev | \
+			addnums)
 
-	secs=$(date +%s)
+		secs=$(date +%s)
 
-	if [[ -n $txq && -n $sndbuff ]]
-	then
-		echo -e "$secs\t$txq\t$sndbuff"
-	fi
-done
+		if [[ !($txq -eq 0 && $sndbuff -eq 0) ]]
+		then
+			echo -e "$secs\t$txq\t$sndbuff"
+		fi
+	done
+}
+
+main
