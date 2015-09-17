@@ -10,7 +10,6 @@ Final year BTech project @ NITC
 [ ] Read send buffer advertisement RFC
 
 
-[ ] Linux Kernel (Get the sources if you have not already)
 ##Bulletin Board
 
 No need to recompile the kernel or reboot everytime we change sctp. It's a module.
@@ -27,3 +26,5 @@ Because we forcefully removed the sctp module while it was used by sctpsrvr.
 Modified protocol.c/sctp_outq_tail to print the type(chunk -> chunk_hdr -> type) and length of data chunks in buffer(out_qlen).
 Future direction -> out_qlen...what does it do?
 
+
+Sir suggested a new tool tc, which can be used to limit network bandwidth. Looking into it.
