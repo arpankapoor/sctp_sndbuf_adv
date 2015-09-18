@@ -22,7 +22,7 @@ main() {
 			tr -s " ")
 
 		txq=$(echo "$assocs" | \
-			cut -d " " -f 9 | \
+			cut -d " " -f 8 | \
 			addnums)
 
 		sndbuff=$(echo "$assocs" | \
