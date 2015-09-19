@@ -1,8 +1,8 @@
 logs=*.aux *.bbl *.bcf *.blg *.lof *.log *.nav *.out *.run.xml *.snm *.toc
 
-all: main.tex
+all: presentation.tex
 	pdflatex $^
-	biber main
+	biber presentation
 	pdflatex $^
 	pdflatex $^
 

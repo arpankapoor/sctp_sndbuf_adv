@@ -13,7 +13,7 @@ addnums() {
 }
 
 main() {
-	echo -e "secs\t\ttxq\tsndbuff"
+	echo -e "secs\t\ttxq\t\trxq\t\tsndbuff"
 
 	while true
 	do
@@ -22,7 +22,17 @@ main() {
 			tr -s " ")
 
 		txq=$(echo "$assocs" | \
+<<<<<<< HEAD
 			cut -d " " -f 8 | \
+||||||| merged common ancestors
+			cut -d " " -f 9 | \
+=======
+			cut -d " " -f 8 | \
+			addnums)
+
+		rxq=$(echo "$assocs" | \
+			cut -d " " -f 9 | \
+>>>>>>> d4c904a028bf868c17f69fd06a305685f31c7bd0
 			addnums)
 
 		sndbuff=$(echo "$assocs" | \
@@ -35,7 +45,7 @@ main() {
 
 		if [[ !($txq -eq 0 && $sndbuff -eq 0) ]]
 		then
-			echo -e "$secs\t$txq\t$sndbuff"
+			echo -e "$secs\t$txq\t\t$rxq\t\t$sndbuff"
 		fi
 	done
 }

@@ -12,6 +12,8 @@ Final year BTech project @ NITC
 
 ##Bulletin Board
 
+I think we should all use this version -- as the source code won't change https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.1.7.tar.xz
+
 No need to recompile the kernel or reboot everytime we change sctp. It's a module.
 
 Generic Socket Structure : struct sock;
