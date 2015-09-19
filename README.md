@@ -1,8 +1,8 @@
 # btech-project
 Final year BTech project @ NITC 
 ##To-do List
-[ ] Understand SCTP
-
+[ ] Understand SCTP and build a step by step flow diagram of the SCTP packet from user space to the wire
+Thorough descriptions of each source file.
 
 [ ] Understand TCP Flow Control
 
