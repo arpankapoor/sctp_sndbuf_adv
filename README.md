@@ -1,16 +1,25 @@
 # btech-project
-Final year BTech project @ NITC 
-##To-do List
+
+Final year BTech project @ NITC
+
+## To-do List
+
 [ ] Understand SCTP and build a step by step flow diagram of the SCTP packet from user space to the wire
 Thorough descriptions of each source file.
 
 [ ] Understand TCP Flow Control
 
-
 [ ] Read send buffer advertisement RFC
 
 
-##Bulletin Board
+## Bulletin Board
+
+- Read [./code/txq_patch/README.md](./code/txq_patch/README.md)
+
+- Always do a `git pull` before doing a `git push`
+
+- v4.2 has some [sctp fixes](https://lkml.org/lkml/2015/8/30/96), so we should
+  use that.
 
 I think we should all use this version -- as the source code won't change https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.1.7.tar.xz
 

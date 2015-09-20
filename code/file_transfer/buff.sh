@@ -22,17 +22,11 @@ main() {
 			tr -s " ")
 
 		txq=$(echo "$assocs" | \
-<<<<<<< HEAD
-			cut -d " " -f 8 | \
-||||||| merged common ancestors
-			cut -d " " -f 9 | \
-=======
 			cut -d " " -f 8 | \
 			addnums)
 
 		rxq=$(echo "$assocs" | \
 			cut -d " " -f 9 | \
->>>>>>> d4c904a028bf868c17f69fd06a305685f31c7bd0
 			addnums)
 
 		sndbuff=$(echo "$assocs" | \
