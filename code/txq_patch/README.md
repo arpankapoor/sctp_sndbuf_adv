@@ -42,6 +42,7 @@
 5. Remove the already loaded modules, and insert the fresh ones (as root)
 
         rmmod -f sctp_probe sctp
+        modprobe libcrc32c              # sctp dependency
         insmod net/sctp/sctp.ko
         insmod net/sctp/sctp_probe.ko
 
