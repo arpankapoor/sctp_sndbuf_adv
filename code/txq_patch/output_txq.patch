@@ -1,0 +1,45 @@
+From 51792ed3d957c08398cd8de12bd2ca0dd109bfdb Mon Sep 17 00:00:00 2001
+From: Arpan Kapoor <k.arpan26@gmail.com>
+Date: Sun, 20 Sep 2015 05:37:26 +0530
+Subject: [PATCH] Output size of transmit queue
+
+Modify the procfs entry /proc/net/sctpprobe to output only the
+following 2 columns: time_elapsed AND sndbuff_used.
+---
+ net/sctp/probe.c | 18 ++----------------
+ 1 file changed, 2 insertions(+), 16 deletions(-)
+
+diff --git a/net/sctp/probe.c b/net/sctp/probe.c
+index 5e68b94..2ae1242 100644
+--- a/net/sctp/probe.c
++++ b/net/sctp/probe.c
+@@ -152,24 +152,10 @@ static sctp_disposition_t jsctp_sf_eat_sack(struct net *net,
+ 		getnstimeofday(&now);
+ 		now = timespec_sub(now, sctpw.tstart);
+ 
+-		printl("%lu.%06lu ", (unsigned long) now.tv_sec,
++		printl("%lu.%06lu", (unsigned long) now.tv_sec,
+ 		       (unsigned long) now.tv_nsec / NSEC_PER_USEC);
+ 
+-		printl("%p %5d %5d %5d %8d %5d ", asoc,
+-		       ep->base.bind_addr.port, asoc->peer.port,
+-		       asoc->pathmtu, asoc->peer.rwnd, asoc->unack_data);
+-
+-		list_for_each_entry(sp, &asoc->peer.transport_addr_list,
+-					transports) {
+-			if (sp == asoc->peer.primary_path)
+-				printl("*");
+-
+-			printl("%pISc %2u %8u %8u %8u %8u %8u ",
+-			       &sp->ipaddr, sp->state, sp->cwnd, sp->ssthresh,
+-			       sp->flight_size, sp->partial_bytes_acked,
+-			       sp->pathmtu);
+-		}
+-		printl("\n");
++		printl("\t\t%d\n", asoc->sndbuf_used);
+ 	}
+ 
+ 	jprobe_return();
+-- 
+2.5.3
+

@@ -14,6 +14,8 @@ Thorough descriptions of each source file.
 
 ## Bulletin Board
 
+- Read [./code/txq_patch/README.md](./code/txq_patch/README.md)
+
 - Always do a `git pull` before doing a `git push`
 
 - v4.2 has some [sctp fixes](https://lkml.org/lkml/2015/8/30/96), so we should
