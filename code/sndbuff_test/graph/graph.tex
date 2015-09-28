@@ -1,0 +1,139 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[margin=1in,landscape]{geometry}
+\usepackage[cleanup]{gnuplottex}
+\usepackage{hyperref}
+\usepackage{xparse}
+
+\hypersetup{
+	hidelinks,
+	pdftitle={SCTP Sendbuffer Usage},
+	pdfauthor={Arpan Kapoor, Deepak Sirone J, K Prasad Krishnan},
+}
+
+\ExplSyntaxOn
+\DeclareExpandableDocumentCommand{\convertlen}{ O{cm} m }
+{
+	\dim_to_decimal_in_unit:nn { #2 } { 1 #1 } cm
+}
+\ExplSyntaxOff
+
+\title{SCTP Sendbuffer Usage}
+\author{Arpan Kapoor \and Deepak Sirone J \and K Prasad Krishnan}
+\date{}
+
+\begin{document}
+
+\maketitle
+\listoffigures
+
+\begin{figure}
+	\centering
+	\begin{gnuplot}[terminal=cairolatex,
+		terminaloptions={size \convertlen{0.95\linewidth},
+			\convertlen{0.95\textheight}}]
+		set xlabel 'Time (s)'
+		set ylabel 'Sendbuffer Used (KB)\vspace{0.5cm}'
+		set format y '%.0s'
+		set key off
+		set xrange [0:30]
+		plot '../data/c0.dat' with lines
+	\end{gnuplot}
+	\caption{1 byte packets.}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{gnuplot}[terminal=cairolatex,
+		terminaloptions={size \convertlen{0.95\linewidth},
+			\convertlen{0.95\textheight}}]
+		set xlabel 'Time (s)'
+		set ylabel 'Sendbuffer Used (KB)\vspace{0.5cm}'
+		set format y '%.0s'
+		set key off
+		set xrange [0:30]
+		plot '../data/c1.dat' every 500 with lines
+	\end{gnuplot}
+	\caption{1452 byte packets.
+		(fragmentation point for an i/f with 1500 as MTU)}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{gnuplot}[terminal=cairolatex,
+		terminaloptions={size \convertlen{0.95\linewidth},
+			\convertlen{0.95\textheight}}]
+		set xlabel 'Time (s)'
+		set ylabel 'Sendbuffer Used (KB)\vspace{0.5cm}'
+		set format y '%.0s'
+		set key off
+		set xrange [0:30]
+		plot '../data/c2.dat' every 500 with lines
+	\end{gnuplot}
+	\caption{1453 byte packets.
+		(min. size at which fragmentation occurs
+		for an i/f with 1500 as MTU)}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{gnuplot}[terminal=cairolatex,
+		terminaloptions={size \convertlen{0.95\linewidth},
+			\convertlen{0.95\textheight}}]
+		set xlabel 'Time (s)'
+		set ylabel 'Sendbuffer Used (KB)\vspace{0.5cm}'
+		set format y '%.0s'
+		set key off
+		set xrange [0:30]
+		plot '../data/c3.dat' every 500 with lines
+	\end{gnuplot}
+	\caption{Sequence of 1, 1453, 32768 byte packets.}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{gnuplot}[terminal=cairolatex,
+		terminaloptions={size \convertlen{0.95\linewidth},
+			\convertlen{0.95\textheight}}]
+		set xlabel 'Time (s)'
+		set ylabel 'Sendbuffer Used (KB)\vspace{0.5cm}'
+		set format y '%.0s'
+		set key off
+		set xrange [0:30]
+		plot '../data/c4.dat' every 500 with lines
+	\end{gnuplot}
+	\caption{Sequence of following size packets.
+		(1, 1000, 2000, 3000, 5000, 10000,15000, 20000, 25000, 32768)}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{gnuplot}[terminal=cairolatex,
+		terminaloptions={size \convertlen{0.95\linewidth},
+			\convertlen{0.95\textheight}}]
+		set xlabel 'Time (s)'
+		set ylabel 'Sendbuffer Used (KB)\vspace{0.5cm}'
+		set format y '%.0s'
+		set key off
+		set xrange [0:30]
+		plot '../data/c5.dat' every 500 with lines
+	\end{gnuplot}
+	\caption{32768 byte packets.
+		(default max receive window size.)}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\begin{gnuplot}[terminal=cairolatex,
+		terminaloptions={size \convertlen{0.95\linewidth},
+			\convertlen{0.95\textheight}}]
+		set xlabel 'Time (s)'
+		set ylabel 'Sendbuffer Used (KB)\vspace{0.5cm}'
+		set format y '%.0s'
+		set key off
+		set xrange [0:30]
+		plot '../data/c6.dat' every 500 with lines
+	\end{gnuplot}
+	\caption{Random size packets.}
+\end{figure}
+
+\end{document}
