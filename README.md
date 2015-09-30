@@ -4,15 +4,20 @@ Final year BTech project @ NITC
 
 ## To-do List
 
-[ ] Understand SCTP and build a step by step flow diagram of the SCTP packet from user space to the wire
-Thorough descriptions of each source file.
+- Study how application buffer management is handled.
 
-[ ] Understand TCP Flow Control
+- Understand SCTP and build a step by step flow diagram of the SCTP packet from
+  user space to the wire thorough descriptions of each source file.
 
-[ ] Read send buffer advertisement RFC
+- Understand TCP Flow Control
+
+- Read send buffer advertisement RFC
 
 
 ## Bulletin Board
+
+- The latest iperf stable version doesn't support SCTP. So we'll have to
+  install from [source](https://github.com/esnet/iperf).
 
 - Read [./code/txq_patch/README.md](./code/txq_patch/README.md)
 
