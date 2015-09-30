@@ -49,3 +49,9 @@ Started reading RFC 793 - Transmission Control Protocol.
 
     I guess Wireshark's promiscuous mode somehow changes the kernel's policy to
     discard the PACKET_OTHERHOST packets and capture them.
+
+2015-09-30
+----------
+
+- Talked to Anil sir about future action plan.
+- Installed iperf v3.1b3
