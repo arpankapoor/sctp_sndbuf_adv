@@ -47,3 +47,9 @@ Sir suggested a new tool tc, which can be used to limit network bandwidth. Looki
 
 Killing the firewall systemctl stop firewalld.services , causes SCTP to run properly.
 
+Think I found what happens on checking for send buffer space.
+sctp_wait_for_sndbuf(asoc, &timeo, msg_len) --> put kernel thread to sleep --> the skb destructor calls the waking up function of there is enough space, skb destructor
+is sctp_wfree() and in that sctp_wake_up_waiters().
+
+Please confirm this!
+
