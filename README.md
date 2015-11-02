@@ -51,7 +51,7 @@ Think I found what happens on checking for send buffer space.
 sctp_wait_for_sndbuf(asoc, &timeo, msg_len) --> put kernel thread to sleep --> the skb destructor calls the waking up function of there is enough space, skb destructor
 is sctp_wfree() and in that sctp_wake_up_waiters().
 
-Reference for kernel waiting: http://www.makelinux.net/ldd3/chp-6-sect-2 
+Reference for kernel waiting: http://www.makelinux.net/ldd3/chp-6-sect-2
 
-Please confirm this!
+Find amount of backlogged data in the sendbuffer. We have found only the total send buffer.
 
