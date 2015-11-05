@@ -2,6 +2,15 @@
 
 Final year BTech project @ NITC
 
+## SSN and TSN
+
+TSNs for each fragment of a fragmented user message **MUST** be strictly
+sequential.
+
+SSN
+- Each chunk of a message has the same SSN.
+- is used to determine the order of delivery of messages to the upper layer.
+
 ## To-do List
 
 - Study how application buffer management is handled.
