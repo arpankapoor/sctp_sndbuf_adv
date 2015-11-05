@@ -56,3 +56,13 @@ Reference for kernel waiting: http://www.makelinux.net/ldd3/chp-6-sect-2
 Find amount of backlogged data in the sendbuffer. We have found only the total send buffer.
 
 Reference for kprobes: http://www.ibm.com/developerworks/library/l-kprobes/index.html
+
+SCTP Socket Sharing by Multiple Associations
+--------------------------------------------
+Every association has an underlying struct sctp_association and it points to a common struct sock. wmem_alloc inside struct sock accounts for the buffer space used by all the associations of the socket. Whenever a chunk is created, the write buffer space is incremented in both the asoc->sndbuf_used and sk_wmem_queued. Therefore the sock accounts for the space used by all it's associations.
+
+1) One to one sctp -- socket mapping
+	Publish asoc->outqueue->out_qlen
+2) Many to one sctp -- socket mapping
+	Publish asoc->outqueue->outq_len
+
