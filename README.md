@@ -73,5 +73,18 @@ Every association has an underlying struct sctp_association and it points to a c
 1) One to one sctp -- socket mapping
 	Publish asoc->outqueue->out_qlen
 2) Many to one sctp -- socket mapping
-	Publish asoc->outqueue->outq_len
+	Publish asoc->outqueue->out_qlen
+
+Send Buffer Advertisement using the HeartBeat Chunk
+---------------------------------------------------
+We can stuff the backlogged sendbuffer data length into a heartbeat chunk, in variable length parameter format,
+ without additional overhead to protocol performance(Refer RFC 4960 Section 3.2.1)
+
+Will this frequency be enough? (Default heartbeat interval is 30s)!?
+Caution: The sendbuffer backlog length is advertised only in those heartbeat chunks going to the primary address.
+
+Possible problems!
+Upper layer can disable the heartbeat for individual addresses
+
+Can only be sent to one idle destination in 1HB interval, so not a broadcast to all the peer addresses.
 
