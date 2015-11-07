@@ -88,3 +88,26 @@ Upper layer can disable the heartbeat for individual addresses
 
 Can only be sent to one idle destination in 1HB interval, so not a broadcast to all the peer addresses.
 
+Proposed Solution
+-----------------
+
+- Add a new chunk type with chunk type value between 128 to 190.
+
+- As specified in the RFC, as the highest order 2 bits are 10 and the chunk
+  is not recognized by a receiver, the chunk will be skipped without sending
+  a _Unrecognized Chunk Type_ error chunk. This ensures that unmodified hosts
+  are unaffected by the proposed changes.
+
+- Chunk format
+
+	 0                   1                   2                   3
+	 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|      Type     |  Chunk Flags  |      Chunk Length             |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|                    Sendbuffer Size                            |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+- Chunk size - 8 bytes (0.53% of a 1500 byte packet)
+
+- Is the overhead considerable?
