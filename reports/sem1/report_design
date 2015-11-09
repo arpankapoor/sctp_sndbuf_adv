@@ -1,0 +1,25 @@
+Each chunk is formatted with a Chunk Type field, a chunk-specific Flag field, a Chunk Length field, and a Value field.
+Chunk Type, which takes a value from 0 to 254,identifies the type of information contained in the Chunk Value field.
+The Chunk Type values from 15 to 62,64 to 126,128 to 190 and 192 to 254 are not used presently in the SCTP implementation.
+For advertising the sendbuffer occupancy,a new Chunk Type value is selected from 128 to 190. RFC lays out the actions when 
+the processing endpoint does not recognize the Chunk Type(as is the case here) depending on the highest order 2 bits. 
+RFC specifies that if the chunk is not recognised by the endpoint and the highest order bits are 10,the chunk will be skipped 
+without sending a Unrecognized Chunk Type error chunk. This ensures that proposed addition of a new Chunk Type would not affect 
+hosts running the unmodified SCTP linux implementation.
+
+The proposed chunk format
+
+The overhead of 8 bytes which can come up in the proposed solution is considerable as it is just 0.53% of a 1500 bye packet.
+
+
+
+
+
+
+
+
+
+
+
+
+
