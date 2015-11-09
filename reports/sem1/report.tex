@@ -1,6 +1,7 @@
 \documentclass[a4paper,11pt]{article}
 \usepackage[english]{babel}
 \usepackage[backend=biber]{biblatex}
+\usepackage{bytefield}
 \usepackage{csquotes}
 \usepackage{geometry}
 \usepackage[cleanup]{gnuplottex}
@@ -77,17 +78,17 @@ using our userspace program.
 
 \begin{figure}[h]
 	\centering
-	\begin{gnuplot}[terminal=cairolatex, terminaloptions={monochrome}]
+	%\begin{gnuplot}[terminal=cairolatex, terminaloptions={monochrome}]
+	\begin{gnuplot}[terminal=cairolatex]
 		set xlabel 'Time (s)'
 		set ylabel 'Sendbuffer Used (KB)\vspace{0.5cm}'
 		set format y '%.0s'
 		set key off
-		set xrange [0:30]
-		plot '../../code/sndbuff_test/data/c6.dat' every 500 with lines lw 2
+		set xrange [0:3700]
+		plot '../../code/file_transfer/datafile' using ($1-1447078873):2 every 500 with lines
 	\end{gnuplot}
-	\caption{Sendbuffer variation with random size packets.}
+	\caption{Sendbuffer variation during a file transfer.}
 \end{figure}
-
 
 We explored the Linux kernel SCTP implementation to understand how the
 data from userspace is transformed into a SCTP packet and sent to the network
@@ -96,10 +97,77 @@ The data structures related to the state information, specifically
 the out queue were studied in detail. The parameter corresponding to the
 sendbuffer information, which is to be advertised was identified.
 
+\subsection{Prerequisite Terms}
+\begin{itemize}
+\item \textbf{SCTP Chunk} is a unit of information within an SCTP packet,
+consisting of a chunk header and chunk-specific content. Currently there
+are about 14 chunk types.\ eg. DATA, INIT, INIT ACK, SACK, etc.
+
+\begin{figure}[h]
+	\centering
+	\begin{bytefield}[bitwidth=1.1em]{32}
+	\bitheader{0-31}\\
+	\bitbox{8}{Chunk Type} & \bitbox{8}{Chunk Flags} & \bitbox{16}{Chunk Length}\\
+	\wordbox{3}{Chunk Value}
+	\end{bytefield}
+	\caption{SCTP Chunk Format}
+\end{figure}
+
+\item \textbf{SCTP Packet} consists of a common header followed by one or
+	more chunks.
+\begin{figure}[h]
+	\centering
+	\begin{bytefield}[bitwidth=1.1em]{32}
+	\bitheader{0-31}\\
+	\bitbox{16}{Source Port Number} & \bitbox{16}{Destination Port Number}\\
+	\bitbox{32}{Verification Tag}\\
+	\bitbox{32}{Checksum}\\
+	\bitbox{32}{Chunk \#1}\\
+	\bitbox{32}{\dots}\\
+	\bitbox{32}{Chunk \#n}
+	\end{bytefield}
+	\caption{SCTP Packet Format}
+\end{figure}
+
+\item \textbf{SCTP Stream} referes to a sequence of user messages that are to be
+	delivered to the upper layer protocol in order with respect to other
+	messages within the same stream. This is unlike TCP, where it refers
+	to a sequence of bytes.
+\end{itemize}
+
+
+\clearpage
 
 \subsection{Design}
+Each chunk is formatted with a Chunk Type field, a chunk-specific Flag field,
+a Chunk Length field, and a Value field. Chunk Type, which takes a value
+from 0 to 254, identifies the type of information contained in the Chunk
+Value field. The Chunk Type values from 15 to 62, 64 to 126, 128 to 190 and
+192 to 254 are not used presently in the SCTP implementation.
+For advertising the sendbuffer occupancy,a new Chunk Type value is selected
+from 128 to 190. RFC 4960 \cite{rfc4960} lays out the actions when the processing endpoint
+does not recognize the Chunk Type(as is the case here) depending on
+the highest order 2 bits. RFC 4960 \cite{rfc4960} specifies that if the chunk is not
+recognised by the endpoint and the highest order bits are 10, the chunk
+will be skipped without sending an Unrecognized Chunk Type error chunk.
+This ensures that proposed addition of a new Chunk Type would not affect
+hosts running the unmodified SCTP linux implementation.
 
-\section{Future Work}
+\begin{figure}[h]
+	\centering
+	\begin{bytefield}[bitwidth=1.1em]{32}
+	\bitheader{0-31}\\
+	\bitbox{8}{Chunk Type} & \bitbox{8}{Chunk Flags} & \bitbox{16}{Chunk Length}\\
+	\bitbox{32}{Sendbuffer size}
+	\end{bytefield}
+	\caption{Proposed Chunk for sendbuffer advertisement}
+\end{figure}
+
+The overhead of 8 bytes which can come up in the proposed solution
+is considerable as it is just 0.53\% of a 1500 byte packet.
+
+
+\section{Future Work and Conclusions}
 To design a working prototype of sendbuffer advertising for SCTP in the Linux
 kernel and test it in a simulated network. Security implications of the
 prototype will also be studied.
