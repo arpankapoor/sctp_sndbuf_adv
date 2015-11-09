@@ -5,7 +5,6 @@
 \usepackage{csquotes}
 \usepackage{geometry}
 \usepackage[cleanup]{gnuplottex}
-%\usepackage[top=1.2in, bottom=1in, left=1.4in, right=1.4in]{geometry}
 \usepackage{hyperref}
 
 \addbibresource{../../references.bib}
@@ -44,7 +43,7 @@ Unlike TCP, SCTP offers sequenced delivery of user messages within multiple
 unidirectional logical channels called streams.
 Each SCTP endpoint is represented as a set of destination transport addresses,
 one of which is the primary address. If the primary address becomes unreachable
-SCTP finds another destination transport address to route the messages 
+SCTP chooses another destination transport address to route the messages 
 thereafter. This provides network-level fault tolerance and is called
 multi-homing.
 It also employs a security cookie mechanism during association initialization
@@ -52,9 +51,9 @@ to provide resistance to flooding and masquerade attacks.
 
 Advertising the amount of backlogged data present in the sender's buffer can
 help network operators evaluate the end-to-end performance of a connection
-in a better way than that with existing passive measurements.
+in a better way than that with the existing passive measurements.
 This information can also be used to infer whether a connection is limited
-by the network or by the application.
+by the network or the application.
 
 \section{Problem Statement}
 To propose a scheme to advertise sendbuffer occupancy information,
@@ -78,7 +77,6 @@ using our userspace program.
 
 \begin{figure}[h]
 	\centering
-	%\begin{gnuplot}[terminal=cairolatex, terminaloptions={monochrome}]
 	\begin{gnuplot}[terminal=cairolatex]
 		set xlabel 'Time (s)'
 		set ylabel 'Sendbuffer Used (KB)\vspace{0.5cm}'
@@ -97,11 +95,12 @@ The data structures related to the state information, specifically
 the out queue were studied in detail. The parameter corresponding to the
 sendbuffer information, which is to be advertised was identified.
 
+\clearpage
+
 \subsection{Prerequisite Terms}
 \begin{itemize}
 \item \textbf{SCTP Chunk} is a unit of information within an SCTP packet,
-consisting of a chunk header and chunk-specific content. Currently there
-are about 14 chunk types.\ eg. DATA, INIT, INIT ACK, SACK, etc.
+consisting of a chunk header and chunk-specific content.
 
 \begin{figure}[h]
 	\centering
@@ -145,13 +144,14 @@ from 0 to 254, identifies the type of information contained in the Chunk
 Value field. The Chunk Type values from 15 to 62, 64 to 126, 128 to 190 and
 192 to 254 are not used presently in the SCTP implementation.
 For advertising the sendbuffer occupancy,a new Chunk Type value is selected
-from 128 to 190. RFC 4960 \cite{rfc4960} lays out the actions when the processing endpoint
-does not recognize the Chunk Type(as is the case here) depending on
-the highest order 2 bits. RFC 4960 \cite{rfc4960} specifies that if the chunk is not
-recognised by the endpoint and the highest order bits are 10, the chunk
-will be skipped without sending an Unrecognized Chunk Type error chunk.
-This ensures that proposed addition of a new Chunk Type would not affect
-hosts running the unmodified SCTP linux implementation.
+from 128 to 190. RFC 4960 \cite{rfc4960} lays out the actions when
+the processing endpoint does not recognize the Chunk Type (as is
+the case here) depending on the highest order 2 bits. RFC 4960 \cite{rfc4960}
+specifies that if the chunk is not recognised by the endpoint and the
+highest order bits are 10, the chunk will be skipped without sending
+an Unrecognized Chunk Type error chunk. This ensures that proposed
+addition of a new Chunk Type would not affect hosts running the
+unmodified SCTP linux implementation.
 
 \begin{figure}[h]
 	\centering
