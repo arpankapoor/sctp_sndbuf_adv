@@ -31,8 +31,11 @@
 \maketitle
 
 \begin{abstract}
-We propose to advertise sendbuffer occupancy in SCTP, i.e.\ 
-the amount of backlogged data present in the sender's buffer.
+Advertising sendbuffer, i.e.
+the amount of backlogged data present in the sender's buffer 
+has been proposed for TCP and experiments show
+improvements in application limited flows.
+This project proposes to advertise the same in SCTP.
 \end{abstract}
 
 \section{Introduction}
@@ -171,6 +174,25 @@ is considerable as it is just 0.53\% of a 1500 byte packet.
 To design a working prototype of sendbuffer advertising for SCTP in the Linux
 kernel and test it in a simulated network. Security implications of the
 prototype will also be studied.
+
+
+SDN (Software Defined Networking) based traffic engineering is an emerging area where
+sendbuffer advertisement can be used for
+performance optimization. Sendbuffer backlog data can be used by
+an SDN enabled network switch to assign priorities to packets
+depending on whether the flow is network limited or
+application limited, to offer better quality of service to the flow.
+
+The other direction is to use sendbuffer backlog for the identification
+of congested links by SDN based traffic controllers. Controllers like
+Hedera use the assumption that flows occupying a bandwidth higher than
+a certain percentage of the host NIC's speed can be scheduled to
+occupy an idle link with the assumption that the link will be filled
+up. Experiments show that this does not always lead to an optimal
+path allocation. The flow maybe application limited and may not
+be capable of utilising the entire idle link bandwidth. Hence
+determining if a flow is network limited or application limited
+can be done accurately using sendbuffer advertisement.
 
 \printbibliography
 
