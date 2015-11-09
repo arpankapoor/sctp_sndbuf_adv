@@ -88,6 +88,8 @@ Upper layer can disable the heartbeat for individual addresses
 
 Can only be sent to one idle destination in 1HB interval, so not a broadcast to all the peer addresses.
 
+Also if the receiver address is actively sending back SACK(s) then heartbeats are not sent to it.
+
 Proposed Solution
 -----------------
 
