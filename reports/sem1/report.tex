@@ -59,7 +59,7 @@ This information can also be used to infer whether a connection is limited
 by the network or the application.
 
 \section{Problem Statement}
-To propose a scheme to advertise sendbuffer occupancy information,
+To propose a scheme to advertise sendbuffer occupancy information in SCTP,
 implement it in the Linux kernel and study the performance and security
 implications of the same.
 
@@ -88,7 +88,7 @@ using our userspace program.
 		set xrange [0:3700]
 		plot '../../code/file_transfer/datafile' using ($1-1447078873):2 every 500 with lines
 	\end{gnuplot}
-	\caption{Sendbuffer variation during a file transfer.}
+	\caption{Sendbuffer variation during a 1 GB file transfer.}
 \end{figure}
 
 We explored the Linux kernel SCTP implementation to understand how the
@@ -112,7 +112,7 @@ consisting of a chunk header and chunk-specific content.
 	\bitbox{8}{Chunk Type} & \bitbox{8}{Chunk Flags} & \bitbox{16}{Chunk Length}\\
 	\wordbox{3}{Chunk Value}
 	\end{bytefield}
-	\caption{SCTP Chunk Format}
+	\caption{SCTP Chunk Format \cite{rfc4960}}
 \end{figure}
 
 \item \textbf{SCTP Packet} consists of a common header followed by one or
@@ -128,7 +128,7 @@ consisting of a chunk header and chunk-specific content.
 	\bitbox{32}{\dots}\\
 	\bitbox{32}{Chunk \#n}
 	\end{bytefield}
-	\caption{SCTP Packet Format}
+	\caption{SCTP Packet Format \cite{rfc4960}}
 \end{figure}
 
 \item \textbf{SCTP Stream} referes to a sequence of user messages that are to be
@@ -176,7 +176,8 @@ kernel and test it in a simulated network. Security implications of the
 prototype will also be studied.
 
 
-SDN (Software Defined Networking) based traffic engineering is an emerging area where
+SDN (Software Defined Networking) based traffic engineering
+is an emerging area where
 sendbuffer advertisement can be used for
 performance optimization. Sendbuffer backlog data can be used by
 an SDN enabled network switch to assign priorities to packets
@@ -185,11 +186,12 @@ application limited, to offer better quality of service to the flow.
 
 The other direction is to use sendbuffer backlog for the identification
 of congested links by SDN based traffic controllers. Controllers like
-Hedera use the assumption that flows occupying a bandwidth higher than
+Hedera \cite{sdn} use the assumption that flows occupying a
+bandwidth higher than
 a certain percentage of the host NIC's speed can be scheduled to
 occupy an idle link with the assumption that the link will be filled
 up. Experiments show that this does not always lead to an optimal
-path allocation. The flow maybe application limited and may not
+path allocation \cite{ohflow}. The flow maybe application limited and may not
 be capable of utilising the entire idle link bandwidth. Hence
 determining if a flow is network limited or application limited
 can be done accurately using sendbuffer advertisement.
