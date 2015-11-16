@@ -113,3 +113,26 @@ Proposed Solution
 - Chunk size - 8 bytes (0.53% of a 1500 byte packet)
 
 - Is the overhead considerable?
+
+Directions Proposed by Anil sir
+-------------------------------
+
+- Propose a new chunk type and put the sendbuffer info into that.
+
+- Encode the sendbuffer state as a flag in one of the existing chunks
+
+- Build a test bed by hacking 2 ordinary linux routers and getting them to have SDN functionality
+
+Proposed Topology
+
+- Both the senders and receivers in one side
+
+
+	S1	     R1
+	 \	    /
+	  Ro1----Ro2
+	 /	  \
+	S2	   R2
+
+
+- Use tc and dummynet for emulating different network conditions.
