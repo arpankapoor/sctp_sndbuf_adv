@@ -128,6 +128,7 @@ Proposed Topology
 - Both the senders and receivers in one side
 
 
+        0            1        2
 	S1	     R1
 	 \	    /
 	  Ro1----Ro2
