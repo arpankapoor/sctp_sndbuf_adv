@@ -127,16 +127,9 @@ Proposed Topology
 
 - Both the senders and receivers in one side
 
-
-	S1	    	 	R1
-
-	 \	    		/
-
-	  Ro1----Ro2
-
-	 /	  		\
-
-	S2	   		R2
+	S1--Ro1------Ro2--R1
+	    |	      |
+	    S2        R2
 
 
 - Use tc and dummynet for emulating different network conditions.
