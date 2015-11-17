@@ -1,0 +1,147 @@
+\documentclass{beamer}
+\usepackage[english]{babel}
+\usepackage[backend=biber]{biblatex}
+\usepackage{bytefield}
+\usepackage{csquotes}
+\setbeamertemplate{bibliography item}[text]
+
+\addbibresource{../../references.bib}
+
+\title{SCTP Sendbuffer Advertising}
+\subtitle{CS4089 Project\\
+	End Semester Evaluation}
+
+\author{Arpan Kapoor, Deepak Sirone J, K Prasad Krishnan\\
+	Guided By:\\ Dr.~Vinod Pathari\\
+	Mr.~V Anil Kumar, Principal Scientist, CSIR, Bengaluru}
+
+\date{November 18, 2015}
+
+\begin{document}
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+	\tableofcontents
+\end{frame}
+
+\section{Introduction}
+\begin{frame}{\insertsection}
+
+\begin{itemize}
+	\item Stream Control Transmission Protocol (SCTP):
+	\begin{itemize}
+		\item Supports multiple logical channels called streams
+		\item Multi-homing
+	\end{itemize}
+\end{itemize}
+
+\begin{itemize}
+	\item Sendbuffer Advertising:
+	\begin{itemize}
+		\item each segment will carry the amount of backlogged data
+			present in the sender's buffer.
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\section{Problem Statement}
+\begin{frame}{\insertsection}
+\begin{itemize}
+\item To propose a scheme to
+\begin{itemize}
+\item advertise sendbuffer occupancy information in SCTP
+\item implement it in the Linux kernel and
+\item study the performance and security implications of the same.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{Prerequisite Terms}
+\begin{frame}[fragile]
+\frametitle{\insertsection}
+\begin{itemize}
+\item \textbf{SCTP Chunk} is a unit of information within an SCTP packet,
+consisting of a chunk header and chunk-specific content.
+
+\begin{figure}[h]
+	\centering
+	\begin{bytefield}{32}
+	\bitheader{0-31}\\
+	\bitbox{8}{Chunk Type} & \bitbox{8}{Chunk Flags} & \bitbox{16}{Chunk Length}\\
+	\wordbox{2}{Chunk Value}
+	\end{bytefield}
+	\caption{SCTP Chunk Format \cite{rfc4960}}
+\end{figure}
+
+\item \textbf{SCTP Packet} consists of a common header followed by one or
+	more chunks.
+
+\item \textbf{Heartbeat Chunk} is used to probe the
+reachability of a particular destination transport address.
+\end{itemize}
+\end{frame}
+
+\section{Work Done}
+\begin{frame}{\insertsection}
+\begin{itemize}
+\item Modified kernel module \texttt{sctp\_probe} to measure sendbuffer.
+\item Explored Linux kernel SCTP implementation
+\item Identified parameter to be advertised
+\end{itemize}
+\end{frame}
+
+\section{Attempted Solution}
+\begin{frame}{\insertsection}
+\begin{itemize}
+\item Encode the sendbuffer information as a variable length
+	parameter in the Heartbeat chunk.
+\item Problems:
+	\begin{itemize}
+		\item Can be disabled by Upper layer.
+		\item Is only sent to idle destination addresses.
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\section{Design}
+\begin{frame}[fragile]
+\frametitle{\insertsection}
+\begin{itemize}
+\item New chunk type with Chunk Type value between 128 to 190.
+\item Highest order 2 bits determine action to be taken if Chunk Type is
+	unknown.
+\item This ensures that unmodified hosts won't send a
+	Unrecognized Chunk Type Error chunk upon reception.
+\end{itemize}
+
+\begin{figure}[h]
+	\centering
+	\begin{bytefield}{32}
+	\bitheader{0-31}\\
+	\bitbox{8}{Chunk Type} & \bitbox{8}{Chunk Flags} & \bitbox{16}{Chunk Length}\\
+	\bitbox{32}{Sendbuffer size}
+	\end{bytefield}
+	\caption{Proposed Chunk for sendbuffer advertisement}
+\end{figure}
+\end{frame}
+
+\section{Future Work}
+\begin{frame}{\insertsection}
+\begin{itemize}
+\item Working prototype in Linux kernel.
+\item To build a small testbed with few nodes and SDN routers.
+\end{itemize}
+\end{frame}
+
+\section{References}
+\begin{frame}[allowframebreaks]
+\frametitle<presentation>{\insertsection}
+\printbibliography
+\end{frame}
+
+\end{document}
