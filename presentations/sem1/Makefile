@@ -1,4 +1,4 @@
-logs=*.aux *.bbl *.bcf *.blg *.lof *.log *.nav *.out *.run.xml *.snm *.toc
+logs=*.aux *.bbl *.bcf *.blg *.lof *.log *.nav *.out *.run.xml *.snm *.toc *.vrb
 
 all: presentation.tex
 	pdflatex $^

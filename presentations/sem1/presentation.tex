@@ -61,13 +61,29 @@
 \end{frame}
 
 \section{Prerequisite Terms}
-\begin{frame}[fragile]
+\begin{frame}[fragile, allowframebreaks]
 \frametitle{\insertsection}
 \begin{itemize}
+
+\item \textbf{SCTP Packet} consists of a common header followed by one or
+	more chunks.
+
+\begin{figure}
+	\centering
+	\begin{bytefield}{32}
+	\bitheader{0-31}\\
+	\bitbox{32}{Common Header}\\
+	\bitbox{32}{Chunk \#1}\\
+	\bitbox{32}{\dots}\\
+	\bitbox{32}{Chunk \#n}
+	\end{bytefield}
+	\caption{SCTP Packet Format \cite{rfc4960}}
+\end{figure}
+\framebreak
 \item \textbf{SCTP Chunk} is a unit of information within an SCTP packet,
 consisting of a chunk header and chunk-specific content.
 
-\begin{figure}[h]
+\begin{figure}
 	\centering
 	\begin{bytefield}{32}
 	\bitheader{0-31}\\
@@ -76,10 +92,6 @@ consisting of a chunk header and chunk-specific content.
 	\end{bytefield}
 	\caption{SCTP Chunk Format \cite{rfc4960}}
 \end{figure}
-
-\item \textbf{SCTP Packet} consists of a common header followed by one or
-	more chunks.
-
 \item \textbf{Heartbeat Chunk} is used to probe the
 reachability of a particular destination transport address.
 \end{itemize}
@@ -89,8 +101,8 @@ reachability of a particular destination transport address.
 \begin{frame}{\insertsection}
 \begin{itemize}
 \item Modified kernel module \texttt{sctp\_probe} to measure sendbuffer.
-\item Explored Linux kernel SCTP implementation
-\item Identified parameter to be advertised
+\item Explored Linux kernel SCTP implementation.
+\item Identified parameter to be advertised.
 \end{itemize}
 \end{frame}
 
@@ -101,7 +113,7 @@ reachability of a particular destination transport address.
 	parameter in the Heartbeat chunk.
 \item Problems:
 	\begin{itemize}
-		\item Can be disabled by Upper layer.
+		\item Can be disabled by upper layer.
 		\item Is only sent to idle destination addresses.
 	\end{itemize}
 \end{itemize}
