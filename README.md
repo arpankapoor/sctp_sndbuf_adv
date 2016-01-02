@@ -13,6 +13,12 @@ SSN
 
 ## To-do List
 
+- Read about AQM.
+
+- Understand SCTP code (especially heartbeat sending mechnism)
+
+- Configure OpenFlow switch in mininet with a controller.
+
 - Study how application buffer management is handled.
 
 - Understand SCTP and build a step by step flow diagram of the SCTP packet from
