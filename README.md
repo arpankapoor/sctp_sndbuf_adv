@@ -136,3 +136,17 @@ Proposed Topology
 - Two senders, two receivers and two routers in a dumb-bell arrangement.
 
 - Use tc and dummynet for emulating different network conditions.
+
+## Second Semester
+	Implementing the changes proposed and demonstrate it in a test environment
+	
+## TODO
+
+- Make the necessary modification to the SCTP kernel module incorporating the new chunk type 
+
+- Find a paper related to SCTP and better the results if possible
+ 
+- Explore more on how we can make use of sendbuffer information 
+
+
+
