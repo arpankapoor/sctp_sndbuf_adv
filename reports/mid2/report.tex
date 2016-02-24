@@ -1,0 +1,143 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[english]{babel}
+\usepackage[backend=biber]{biblatex}
+\usepackage{bytefield}
+\usepackage{csquotes}
+\usepackage{geometry}
+\usepackage[cleanup]{gnuplottex}
+\usepackage{hyperref}
+
+\addbibresource{../../references.bib}
+
+\hypersetup{
+  hidelinks,
+  pdftitle={SCTP Sendbuffer Advertising},
+  pdfauthor={Arpan Kapoor, Deepak Sirone J, K Prasad Krishnan},
+  pdfsubject={End Semester Report},
+}
+
+
+\title{SCTP Sendbuffer Advertising\\
+  {\normalsize CS4099 Project\\
+    Midterm Report}}
+
+\author{Arpan Kapoor (B120555CS)\\
+  Deepak Sirone J (B120097CS)\\
+  K Prasad Krishnan (B120128CS)\and
+  Guided By:\\ Dr.~Vinod Pathari\\
+  Mr.~V Anil Kumar, Principal Scientist, CSIR, Bengaluru}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+Stream Control Transport Protocol (SCTP) is a reliable transport protocol
+designed to transport Public Switched Telephone Network (PSTN) signaling
+messages over IP networks, but is capable of broader applications.
+Unlike TCP, SCTP offers sequenced delivery of user messages within multiple
+unidirectional logical channels called streams.
+Each SCTP endpoint is represented as a set of destination transport addresses,
+one of which is the primary address. If the primary address becomes unreachable
+SCTP chooses another destination transport address to route the messages 
+thereafter. This provides network-level fault tolerance and is called
+multi-homing.
+It also employs a security cookie mechanism during association initialization
+to provide resistance to flooding and masquerade attacks.
+
+Advertising the amount of backlogged data present in the sender's buffer can
+help network operators evaluate the end-to-end performance of a connection
+in a better way than that with the existing passive measurements.
+This information can also be used to infer whether a connection is limited
+by the network or the application.
+
+\section{Problem Statement}
+To propose a scheme to advertise sendbuffer occupancy information in SCTP,
+implement it in the Linux kernel and study the performance and security
+implications of the same.
+
+\section{Literature Survey}
+RFC 3286 \cite{rfc3286} provides a high level introduction to the capabilities
+supported by SCTP, while RFC 4960 \cite{rfc4960} describes the complete
+protocol. Agache and Raiciu \cite{tcp-sndbufadv} propose a scheme to advertise
+sendbuffer occupancy in TCP. \cite{budigerelinux} was used to study the state
+machine employed in the Linux SCTP implementation. It was also used to 
+understand the SCTP packet flow within the kernel.
+
+\section{Work Done in the previous semester}
+Initially, we wrote a file transfer utility that uses SCTP as the
+transport protocol.
+We modified a kernel module called \texttt{sctp\_probe} to measure and plot
+the sendbuffer size at regular intervals during a file transfer performed
+using our userspace program.
+
+\begin{figure}[h]
+  \centering
+  \begin{gnuplot}[terminal=cairolatex]
+    set xlabel 'Time (s)'
+    set ylabel 'Sendbuffer Used (KB)\vspace{0.5cm}'
+    set format y '%.0s'
+    set key off
+    set xrange [0:3700]
+    plot '../../code/file_transfer/datafile' using ($1-1447078873):2 every 500 with lines
+  \end{gnuplot}
+  \caption{Sendbuffer variation during a 1 GB file transfer.}
+\end{figure}
+
+We explored the Linux kernel SCTP implementation to understand how the
+data from userspace is transformed into a SCTP packet and sent to the network
+layer.
+The data structures related to the state information, specifically
+the out queue were studied in detail. The parameter corresponding to the
+sendbuffer information, which is to be advertised was identified.
+
+\clearpage
+
+\subsection{Design}
+Each chunk is formatted with a Chunk Type field, a chunk-specific Flag field,
+a Chunk Length field, and a Value field. Chunk Type, which takes a value
+from 0 to 254, identifies the type of information contained in the Chunk
+Value field. The Chunk Type values from 15 to 62, 64 to 126, 128 to 190 and
+192 to 254 are not used presently in the SCTP implementation.
+For advertising the sendbuffer occupancy,a new Chunk Type value is selected
+from 128 to 190. RFC 4960 \cite{rfc4960} lays out the actions when
+the processing endpoint does not recognize the Chunk Type (as is
+the case here) depending on the highest order 2 bits. RFC 4960 \cite{rfc4960}
+specifies that if the chunk is not recognised by the endpoint and the
+highest order bits are 10, the chunk will be skipped without sending
+an Unrecognized Chunk Type error chunk. This ensures that proposed
+addition of a new Chunk Type would not affect hosts running the
+unmodified SCTP linux implementation.
+
+\begin{figure}[h]
+  \centering
+  \begin{bytefield}[bitwidth=1.1em]{32}
+  \bitheader{0-31}\\
+  \bitbox{8}{Chunk Type} & \bitbox{8}{Chunk Flags} & \bitbox{16}{Chunk Length}\\
+  \bitbox{32}{Sendbuffer size}
+  \end{bytefield}
+  \caption{Proposed Chunk for sendbuffer advertisement}
+\end{figure}
+
+The overhead of 8 bytes which can come up in the proposed solution
+is considerable as it is just 0.53\% of a 1500 byte packet.
+
+
+\section{Work Done in the current semester}
+A working prototype of sendbuffer advertisement was implemented in the Linux
+kernel. The interval for sending the sendbuffer advertisement chunk can be
+modified at runtime.
+
+
+\section{Future Work and Conclusions}
+To test the prototype of sendbuffer advertising for SCTP in the Linux kernel
+in a network. Security implications of the prototype will also be studied.
+
+There are several scheduling algorithms which prioritizes packets based on some
+criteria. One of these priority based scheduling algorithms can be modified to
+consider the sendbuffer information and to improve QoS for high volume flows.
+
+\clearpage
+\printbibliography
+
+\end{document}
