@@ -137,10 +137,10 @@ index c0380cf..1f0ff6e 100644
  		case SCTP_CID_ECN_ECNE:
  		case SCTP_CID_ASCONF:
 diff --git a/net/sctp/protocol.c b/net/sctp/protocol.c
-index ab0d538..1d90e9d 100644
+index 1099e99..50062aa 100644
 --- a/net/sctp/protocol.c
 +++ b/net/sctp/protocol.c
-@@ -1243,6 +1243,9 @@ static int __net_init sctp_defaults_init(struct net *net)
+@@ -1245,6 +1245,9 @@ static int __net_init sctp_defaults_init(struct net *net)
  	/* HB.interval              - 30 seconds */
  	net->sctp.hb_interval			= SCTP_DEFAULT_TIMEOUT_HEARTBEAT;
  
@@ -151,10 +151,10 @@ index ab0d538..1d90e9d 100644
  	net->sctp.sack_timeout			= SCTP_DEFAULT_TIMEOUT_SACK;
  
 diff --git a/net/sctp/sm_make_chunk.c b/net/sctp/sm_make_chunk.c
-index 5d6a03f..4d2ece1 100644
+index 5d6a03f..6c50ff3 100644
 --- a/net/sctp/sm_make_chunk.c
 +++ b/net/sctp/sm_make_chunk.c
-@@ -1189,6 +1189,30 @@ nodata:
+@@ -1189,6 +1189,40 @@ nodata:
  	return retval;
  }
  
@@ -163,20 +163,30 @@ index 5d6a03f..4d2ece1 100644
 +					const struct sctp_transport *transport)
 +{
 +	struct sctp_chunk *retval;
-+	__u32 sndbuf_used;
++	__u32 lhs;
++	__u32 rhs;
++	__u32 sndbuf;
 +
++	lhs = asoc->outqueue.out_qlen + asoc->outqueue.outstanding_bytes;
++	rhs = min(asoc->peer.rwnd, transport->cwnd);
++
++	/* zero is the same in any byte ordering */
++	if (lhs <= rhs) {
++		retval = NULL;
++		goto nodata;
++	}
++
++	sndbuf = htonl(lhs - rhs);
 +	retval = sctp_make_control(asoc, SCTP_CID_SNDBUF_ADV, 0, sizeof(__u32));
 +
 +	if (!retval)
 +		goto nodata;
 +
-+	sndbuf_used = htonl(asoc->outqueue.out_qlen);
-+
 +	/* Cast away the 'const', as this is just telling the chunk
 +	 * what transport it belongs to.
 +	 */
 +	retval->transport = (struct sctp_transport *) transport;
-+	sctp_addto_chunk(retval, sizeof(__u32), &sndbuf_used);
++	sctp_addto_chunk(retval, sizeof(__u32), &sndbuf);
 +
 +nodata:
 +	return retval;
@@ -212,7 +222,7 @@ index b5327bb..b693576 100644
  
  
 diff --git a/net/sctp/sm_statefuns.c b/net/sctp/sm_statefuns.c
-index f1f08c8..7e9e727 100644
+index f1f08c8..daca1a1 100644
 --- a/net/sctp/sm_statefuns.c
 +++ b/net/sctp/sm_statefuns.c
 @@ -823,6 +823,8 @@ sctp_disposition_t sctp_sf_do_5_1D_ce(struct net *net,
@@ -234,7 +244,7 @@ index f1f08c8..7e9e727 100644
  	if (asoc->timeouts[SCTP_EVENT_TIMEOUT_AUTOCLOSE])
  		sctp_add_cmd_sf(commands, SCTP_CMD_TIMER_START,
  				SCTP_TO(SCTP_EVENT_TIMEOUT_AUTOCLOSE));
-@@ -1194,6 +1199,40 @@ sctp_disposition_t sctp_sf_backbeat_8_3(struct net *net,
+@@ -1194,6 +1199,43 @@ sctp_disposition_t sctp_sf_backbeat_8_3(struct net *net,
  	return SCTP_DISPOSITION_CONSUME;
  }
  
@@ -262,10 +272,13 @@ index f1f08c8..7e9e727 100644
 +
 +	/* Send a sendbuffer advert to the active peer.  */
 +	reply = sctp_make_sndbuf_adv(asoc, asoc->peer.active_path);
-+	if (!reply)
-+		return SCTP_DISPOSITION_NOMEM;
 +
-+	sctp_add_cmd_sf(commands, SCTP_CMD_REPLY, SCTP_CHUNK(reply));
++	/* Send sendbuffer advert chunk only if sndbuf_used > 0
++	 * and we have suffient memory.
++	 */
++	if (reply)
++		sctp_add_cmd_sf(commands, SCTP_CMD_REPLY, SCTP_CHUNK(reply));
++
 +	sctp_add_cmd_sf(commands, SCTP_CMD_TIMER_RESTART,
 +			SCTP_TO(SCTP_EVENT_TIMEOUT_SNDBUF_ADV));
 +
@@ -275,7 +288,7 @@ index f1f08c8..7e9e727 100644
  /* Helper function to send out an abort for the restart
   * condition.
   */
-@@ -1834,6 +1873,8 @@ static sctp_disposition_t sctp_sf_do_dupcook_b(struct net *net,
+@@ -1834,6 +1876,8 @@ static sctp_disposition_t sctp_sf_do_dupcook_b(struct net *net,
  			SCTP_STATE(SCTP_STATE_ESTABLISHED));
  	SCTP_INC_STATS(net, SCTP_MIB_CURRESTAB);
  	sctp_add_cmd_sf(commands, SCTP_CMD_HB_TIMERS_START, SCTP_NULL());
@@ -284,7 +297,7 @@ index f1f08c8..7e9e727 100644
  
  	repl = sctp_make_cookie_ack(new_asoc, chunk);
  	if (!repl)
-@@ -1929,6 +1970,8 @@ static sctp_disposition_t sctp_sf_do_dupcook_d(struct net *net,
+@@ -1929,6 +1973,8 @@ static sctp_disposition_t sctp_sf_do_dupcook_d(struct net *net,
  		SCTP_INC_STATS(net, SCTP_MIB_CURRESTAB);
  		sctp_add_cmd_sf(commands, SCTP_CMD_HB_TIMERS_START,
  				SCTP_NULL());
@@ -293,7 +306,7 @@ index f1f08c8..7e9e727 100644
  
  		/* RFC 2960 5.1 Normal Establishment of an Association
  		 *
-@@ -2358,6 +2401,8 @@ static sctp_disposition_t sctp_sf_do_5_2_6_stale(struct net *net,
+@@ -2358,6 +2404,8 @@ static sctp_disposition_t sctp_sf_do_5_2_6_stale(struct net *net,
  	/* Stop pending T3-rtx and heartbeat timers */
  	sctp_add_cmd_sf(commands, SCTP_CMD_T3_RTX_TIMERS_STOP, SCTP_NULL());
  	sctp_add_cmd_sf(commands, SCTP_CMD_HB_TIMERS_STOP, SCTP_NULL());
@@ -302,7 +315,7 @@ index f1f08c8..7e9e727 100644
  
  	/* Delete non-primary peer ip addresses since we are transitioning
  	 * back to the COOKIE-WAIT state
-@@ -5273,6 +5318,9 @@ sctp_disposition_t sctp_sf_do_9_2_start_shutdown(
+@@ -5273,6 +5321,9 @@ sctp_disposition_t sctp_sf_do_9_2_start_shutdown(
  	 */
  	sctp_add_cmd_sf(commands, SCTP_CMD_HB_TIMERS_STOP, SCTP_NULL());
  
@@ -312,7 +325,7 @@ index f1f08c8..7e9e727 100644
  	sctp_add_cmd_sf(commands, SCTP_CMD_REPLY, SCTP_CHUNK(reply));
  
  	return SCTP_DISPOSITION_CONSUME;
-@@ -5352,6 +5400,9 @@ sctp_disposition_t sctp_sf_do_9_2_shutdown_ack(
+@@ -5352,6 +5403,9 @@ sctp_disposition_t sctp_sf_do_9_2_shutdown_ack(
  	 */
  	sctp_add_cmd_sf(commands, SCTP_CMD_HB_TIMERS_STOP, SCTP_NULL());
  
