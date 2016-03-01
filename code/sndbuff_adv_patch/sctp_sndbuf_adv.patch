@@ -1,5 +1,5 @@
 diff --git a/include/linux/sctp.h b/include/linux/sctp.h
-index a9414fd..cbd0824 100644
+index a9414fd..3719e20 100644
 --- a/include/linux/sctp.h
 +++ b/include/linux/sctp.h
 @@ -102,6 +102,9 @@ typedef enum {
@@ -7,7 +7,7 @@ index a9414fd..cbd0824 100644
  	SCTP_CID_AUTH			= 0x0F,
  
 +	/* SNDBUF_ADV */
-+	SCTP_CID_SNDBUF_ADV		= 0x82,
++	SCTP_CID_SNDBUF_ADV		= 0x96,
 +
  	/* PR-SCTP Sec 3.2 */
  	SCTP_CID_FWD_TSN		= 0xC0,
