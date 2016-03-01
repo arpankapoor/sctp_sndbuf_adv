@@ -1,15 +1,12 @@
 # What?
 
-- Patch to send a sendbuffer advertisement chunk (chunk type value `130`)
-  every `sndbuf_adv_interval`.
+- Patch to send a sendbuffer advertisement chunk (chunk id `150`) every
+  `sndbuf_adv_interval`.
 
 - Modify the interval value by writing to the sysctl file
   `/proc/sys/net/sctp/sndbuf_adv_interval` (default is 5000 ms).
 
-- **One obvious change to be made is to not send the chunk if the outqueue is
-  empty.**
-
-- Applies to v4.5-rc4, v4.4.2, v4.3.6, v4.1.8, v3.18.27 and v3.14.61, but not
+- Applies to v4.5-rc6, v4.4.3, v4.3.6, v4.1.8, v3.18.27 and v3.14.62, but not
   before that.
 
 # Apply the patch
