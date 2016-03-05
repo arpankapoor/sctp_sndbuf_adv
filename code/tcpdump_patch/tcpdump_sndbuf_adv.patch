@@ -1,0 +1,31 @@
+diff --git a/print-sctp.c b/print-sctp.c
+index b092d77..17ec9c1 100644
+--- a/print-sctp.c
++++ b/print-sctp.c
+@@ -111,6 +111,7 @@
+ #define SCTP_FORWARD_CUM_TSN    0xc0
+ #define SCTP_RELIABLE_CNTL      0xc1
+ #define SCTP_RELIABLE_CNTL_ACK  0xc2
++#define SCTP_SNDBUF_ADV         0x96
+ 
+ static const struct tok sctp_chunkid_str[] = {
+ 	{ SCTP_DATA,              "DATA"              },
+@@ -131,6 +132,7 @@ static const struct tok sctp_chunkid_str[] = {
+ 	{ SCTP_FORWARD_CUM_TSN,   "FOR CUM TSN"       },
+ 	{ SCTP_RELIABLE_CNTL,     "REL CTRL"          },
+ 	{ SCTP_RELIABLE_CNTL_ACK, "REL CTRL ACK"      },
++	{ SCTP_SNDBUF_ADV,        "SNDBUF ADVT"      },
+ 	{ 0, NULL }
+ };
+ 
+@@ -779,6 +781,10 @@ void sctp_print(netdissect_options *ndo,
+ 	    }
+ 	    break;
+ 	  }
++	case SCTP_SNDBUF_ADV:
++	  {
++	    ND_PRINT((ndo, "[sendbuffer size %u]", EXTRACT_32BITS(bp)));
++	  }
+ 	default :
+ 	  {
+             bp += chunkLengthRemaining;
