@@ -41,7 +41,7 @@
 \begin{itemize}
 	\item Sendbuffer Advertising:
 	\begin{itemize}
-		\item each segment will carry the amount of backlogged data
+    \item specialized chunks will carry the amount of backlogged data
 			present in the sender's buffer.
 	\end{itemize}
 \end{itemize}
@@ -108,10 +108,15 @@
 \section{Future Work}
 \begin{frame}{\insertsection}
 \begin{itemize}
-\item To test the prototype of sendbuffer advertising for SCTP in the Linux kernel in a network.
 \item There are several scheduling algorithms which prioritizes packets based on some
 criteria. One of these priority based scheduling algorithms can be modified to consider
 the sendbuffer information and to improve QoS for high volume flows.
+\item Future Directions
+  \begin{enumerate}
+    \item Use the testbed available at CSIR, Bengaluru.
+    \item Create a testbed at NITC.
+    \item Use a simulated network environment.
+  \end{enumerate}
 \end{itemize}
 \end{frame}
 
