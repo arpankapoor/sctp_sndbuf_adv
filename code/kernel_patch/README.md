@@ -17,7 +17,8 @@
 
 2. Compile and install. Reboot to the compiled kernel.
 
-3. Transfer a file and capture the sendbuffer advert chunks in Wireshark
-   using the filter `sctp.chunk_type == 130`.
+3. Transfer a file and capture the sendbuffer advert chunks in
+    - Wireshark using the filter `sctp.chunk_type == 150`.
+    - tcpdump `sctp[12:1] = 150`
 
 4. Ponder over how to use this information...
