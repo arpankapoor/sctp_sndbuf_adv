@@ -6,8 +6,7 @@
 - Modify the interval value by writing to the sysctl file
   `/proc/sys/net/sctp/sndbuf_adv_interval` (default is 5000 ms).
 
-- Applies to v4.5-rc6, v4.4.3, v4.3.6, v4.1.8, v3.18.27 and v3.14.62, but not
-  before that.
+- Applies to v4.6-rc3.
 
 # Apply the patch
 
