@@ -70,8 +70,9 @@
 \end{itemize}
 
 \section{Proposed Modification}
-For advertising the sendbuffer occupancy, we propose to add a new Chunk Type,
-with a 32-bit Chunk Value field containing the size of the sendbuffer.
+For advertising the send buffer occupancy, we propose to add a new Chunk Type,
+with a 32-bit Chunk Value field containing the amount of backlogged data in the
+send buffer.
 
 To ensure that hosts running an unmodified SCTP stack skip this chunk without
 returning an ERROR chunk, the highest-order 2 bits of the Chunk Type of this
@@ -86,19 +87,39 @@ The total size of this chunk is 8 bytes, which is 0.53\% of a typical
   \begin{bytefield}[bitwidth=1.0em]{32}
     \bitheader{0-31}\\
     \bitbox{8}{Chunk Type} & \bitbox{8}{Chunk Flags} & \bitbox{16}{Chunk Length}\\
-    \bitbox{32}{Sendbuffer size}
+    \bitbox{32}{Send buffer size}
   \end{bytefield}
-  \caption{Proposed Chunk for sendbuffer advertisement}
+  \caption{Proposed Chunk for send buffer advertisement}
 \end{figure}
 
+\subsection{Send buffer value}
+The kernel send buffer can be divided into 2 distinct parts:
+\begin{itemize}
+  \item unacknowledged in-flight segments.
+  \item segments waiting to be sent (backlog).
+\end{itemize}
+
+\noindent
+We propose to advertise the number of bytes in this backlog in the
+Chunk Value field of the proposed chunk.
+\begin{figure}[h]
+  \centering
+  \begin{bytefield}[bitwidth=1.0em]{32}
+    \bitbox{16}{In-flight segments} &
+    \bitbox{16}{Backlogged segments}
+  \end{bytefield}
+  \caption{Send buffer structure}
+\end{figure}
+
+
 \section{Test bed design}
-A dumbbell shaped network topology is created with 2 routers in the center, and
+A dumbbell shaped network topology was created with 2 routers in the center, and
 multiple hosts connected to each of the routers.
 
 \begin{figure}[h]
   \centering
   \small
-  \begin{tikzpicture}[start chain=testbed going right, node distance=1.5cm]
+  \begin{tikzpicture}[start chain=testbed going right]
 
     \node [on chain] {\vdots};
 
@@ -110,22 +131,29 @@ multiple hosts connected to each of the routers.
     label=below:PC\textsubscript{\(x\)}] (pcn)
     {\includegraphics{imgs/pc.eps}};
 
-    \node
-    [on chain, join=with pc1, join=with pcn,
+    \node [on chain, join=with pc1, join=with pcn,
+    label=below:Switch\textsubscript{\(1\)}]
+    {\includegraphics{imgs/switch.eps}};
+
+    \node [on chain, join,
     label=below:Router\textsubscript{\(1\)}]
     {\includegraphics{imgs/router.eps}};
 
-    \node[on chain, join,
-    label=below:Router\textsubscript{\(2\)}] (router2)
+    \node [on chain, join,
+    label=below:Router\textsubscript{\(2\)}]
     {\includegraphics{imgs/router.eps}};
+
+    \node [on chain, join,
+    label=below:Switch\textsubscript{\(2\)}] (switch2)
+    {\includegraphics{imgs/switch.eps}};
 
     \node [on chain] {\vdots};
 
-    \node [start branch=3 going above, on chain, join=with router2,
+    \node [start branch=3 going above, on chain, join=with switch2,
     label=below:PC\textsubscript{\(x+1\)}]
     {\includegraphics{imgs/pc.eps}};
 
-    \node [start branch=4 going below, on chain, join=with router2,
+    \node [start branch=4 going below, on chain, join=with switch2,
     label=below:PC\textsubscript{\(y\)}]
     {\includegraphics{imgs/pc.eps}};
 
