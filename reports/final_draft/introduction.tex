@@ -6,12 +6,13 @@ Unlike TCP, SCTP offers sequenced delivery of user messages within multiple
 unidirectional logical channels called streams.
 Each SCTP endpoint is represented as a set of destination transport addresses,
 one of which is the primary address. If the primary address becomes unreachable
-SCTP chooses another destination transport address to route the messages 
+SCTP chooses another destination transport address to route the messages
 thereafter. This provides network-level fault tolerance and is called
 multi-homing.
 It also employs a security cookie mechanism during association initialization
 to provide resistance to flooding and masquerade attacks.
 
+\textbf{TODO: Revise this paragraph.}
 Advertising the amount of backlogged data present in the sender's buffer can
 help network operators evaluate the end-to-end performance of a connection
 in a better way than that with the existing passive measurements.
@@ -19,6 +20,7 @@ This information can also be used to infer whether a connection is limited
 by the network or the application.
 
 \section{Problem Statement}
+\textbf{TODO: Update.}
 To propose a scheme to advertise sendbuffer occupancy information in SCTP,
 implement it in the Linux kernel and study the performance and security
 implications of the same.
@@ -28,5 +30,8 @@ RFC 3286 \cite{rfc3286} provides a high level introduction to the capabilities
 supported by SCTP, while RFC 4960 \cite{rfc4960} describes the complete
 protocol. Agache and Raiciu \cite{tcp-sndbufadv} propose a scheme to advertise
 sendbuffer occupancy in TCP. \cite{budigerelinux} was used to study the state
-machine employed in the Linux SCTP implementation. It was also used to 
-understand the SCTP packet flow within the kernel.
+machine employed in the Linux SCTP implementation. It was also used to
+understand the SCTP packet flow within the kernel. \cite{lartc} provided with
+an overview of the traffic control and routing mechanisms in the Linux kernel,
+along with the userspace tools available for shaping and controlling the
+traffic.

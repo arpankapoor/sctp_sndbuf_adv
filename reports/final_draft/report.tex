@@ -1,6 +1,7 @@
 \documentclass[12pt,a4paper]{report}
 \usepackage[english]{babel}
 \usepackage{biblatex}
+\usepackage{bytefield}
 \usepackage[utf8]{inputenc}
 \usepackage{csquotes}
 \usepackage[T1]{fontenc}
@@ -8,7 +9,9 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{lmodern}
+\usepackage{tikz}
 
+\usetikzlibrary{chains,scopes}
 \hypersetup{
   hidelinks,
   pdftitle={SCTP Sendbuffer Advertisement},
@@ -31,7 +34,6 @@
 
 \newpage
 \pagenumbering{arabic}
-
 
 \include{introduction}
 \include{design}
