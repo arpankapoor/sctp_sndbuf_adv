@@ -1,4 +1,15 @@
 \chapter{Results}
+
 \section{Use Case Description}
+The test bed was used to create a scenario in which there are multiple
+senders and multiple receivers. Multiple flows were created and the
+bottleneck between the two Raspberry Pis were fully utilized. The aim
+was to classify the flows according to the bandwidth requirements. The
+TBF qdisc did not ensure fair sharing of bandwidth. The SFQ qdisc gives
+very good performance but fails for high number of flows \cite{lartc}. We
+expect our method of classification can yield better results in reducing
+average flow completion time in the above case.
+
 \section{Test Results}
-\section{Explaination of Test Results}
+
+\section{Explanation of Test Results}

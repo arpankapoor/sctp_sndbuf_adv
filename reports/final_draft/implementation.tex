@@ -15,8 +15,9 @@
 \end{itemize}
 
 \section{Test bed Implementation Details}
-Two Raspberry Pis were configured as routers and laptops were used as end hosts
-to achieve the dumbbell shaped topology.
+Two Raspberry Pis running Arch Linux were configured as routers by enabling
+IP forwarding.
+Laptops running the modified Linux kernel were used as end hosts.
 
 \begin{figure}[h]
   \centering
@@ -77,4 +78,23 @@ to achieve the dumbbell shaped topology.
 
   \end{tikzpicture}
   \caption{Test bed implementation}
+  \label{fig:testbed}
 \end{figure}
+
+The hosts in the test bed were allocated IP addresses as in figure
+\ref{fig:testbed}.
+From the figure, we observe that RPi\textsubscript{1}
+would not be able to route packets with destination address in the
+\texttt{192.168.50.0/24} subnet, and similarly RPi\textsubscript{2}
+wouldn't be able to route packets directed to
+\texttt{192.168.150.0/24} subnet. To enable end-to-end communication,
+appropriate static routes were added to both the RPis.
+
+The \texttt{tc} utility was used in the both the RPis to shape the
+network flows in the bottleneck link. Larger bandwidth was
+provided to flows with higher values of the percentage send buffer occupancy.
+
+The Hierarchy Token Bucket classful queuing discipline was used to classify the
+traffic into 11 classes, one of which is the default class used for non-SCTP
+packets. The remaining 10 classes correspond to the send buffer occupancy
+ranges of size 10.
