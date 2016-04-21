@@ -67,32 +67,11 @@
       \caption{SCTP Chunk Format}
     \end{figure}
 
+  \item Network Flow - A sequence of packets in a transport connection.
+
 \end{itemize}
 
-\section{Proposed Modification}
-For advertising the send buffer occupancy, we propose to add a new Chunk Type,
-with a 32-bit Chunk Value field containing the amount of backlogged data in the
-send buffer.
-
-To ensure that hosts running an unmodified SCTP stack skip this chunk without
-returning an ERROR chunk, the highest-order 2 bits of the Chunk Type of this
-chunk should be \texttt{10} (as explained in section~\ref{2bits}).
-This limits the choice of the Chunk Type value between 128 and 190.
-
-The total size of this chunk is 8 bytes, which is 0.53\% of a typical
-1500 byte packet.
-
-\begin{figure}[h]
-  \centering
-  \begin{bytefield}[bitwidth=1.0em]{32}
-    \bitheader{0-31}\\
-    \bitbox{8}{Chunk Type} & \bitbox{8}{Chunk Flags} & \bitbox{16}{Chunk Length}\\
-    \bitbox{32}{Send buffer size}
-  \end{bytefield}
-  \caption{Proposed Chunk for send buffer advertisement}
-\end{figure}
-
-\subsection{Send buffer value}
+\section{Send buffer value}
 The kernel send buffer can be divided into 2 distinct parts:
 \begin{itemize}
   \item unacknowledged in-flight segments.
@@ -111,10 +90,60 @@ Chunk Value field of the proposed chunk.
   \caption{Send buffer structure}
 \end{figure}
 
+\section{Previously Proposed Modification}
+For advertising the send buffer occupancy, we propose to add a new Chunk Type,
+with a 32-bit Chunk Value field containing the amount of backlogged data in the
+send buffer.
+
+To ensure that hosts running an unmodified SCTP stack skip this chunk without
+returning an ERROR chunk, the highest-order 2 bits of the Chunk Type of this
+chunk should be \texttt{10} (as explained in section~\ref{2bits}).
+This limits the choice of the Chunk Type value between 128 and 190.
+
+This chunk is sent at a specified interval.
+The total size of this chunk is 8 bytes, which is 0.53\% of a typical
+1500 byte packet.
+
+
+
+\begin{figure}[h]
+  \centering
+  \begin{bytefield}[bitwidth=1.0em]{32}
+    \bitheader{0-31}\\
+    \bitbox{8}{Chunk Type} & \bitbox{8}{Chunk Flags} & \bitbox{16}{Chunk Length}\\
+    \bitbox{32}{Send buffer size}
+  \end{bytefield}
+  \caption{Proposed Chunk for send buffer advertisement}
+\end{figure}
+
+\section{Currently Proposed Modification}
+For advertising the send buffer occupancy, we propose to add a new Chunk Type,
+with the Chunk Flags field containing the percentage occupancy of the send
+buffer.
+
+To ensure that hosts running an unmodified SCTP stack skip this chunk without
+returning an ERROR chunk, the highest-order 2 bits of the Chunk Type of this
+chunk should be \texttt{10} (as explained in section~\ref{2bits}).
+This limits the choice of the Chunk Type value between 128 and 190.
+
+Each SCTP packet contains this chunk as the first chunk.
+The total size of this chunk is 4 bytes, which is 0.26\% of a typical
+1500 byte packet.
+
+\begin{figure}[h]
+  \centering
+  \begin{bytefield}[bitwidth=1.0em]{32}
+    \bitheader{0-31}\\
+    \bitbox{8}{Chunk Type} & \bitbox{8}{Percentage send buffer occupancy} & \bitbox{16}{Chunk Length}\\
+  \end{bytefield}
+  \caption{Proposed Chunk for send buffer advertisement}
+\end{figure}
 
 \section{Test bed design}
-A dumbbell shaped network topology was created with 2 routers in the center, and
-multiple hosts connected to each of the routers.
+A dumbbell shaped network topology was created with two routers in the center,
+and multiple hosts connected to one end of each router via a switch. This
+ensures that we have a bottleneck link in all flows between end hosts on
+either side.
 
 \begin{figure}[h]
   \centering
