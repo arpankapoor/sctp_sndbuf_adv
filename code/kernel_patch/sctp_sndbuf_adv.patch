@@ -151,10 +151,10 @@ index d3d50da..4d88bee 100644
  	net->sctp.sack_timeout			= SCTP_DEFAULT_TIMEOUT_SACK;
  
 diff --git a/net/sctp/sm_make_chunk.c b/net/sctp/sm_make_chunk.c
-index 7f0bf79..185cf1c 100644
+index 7f0bf79..c2c70d3 100644
 --- a/net/sctp/sm_make_chunk.c
 +++ b/net/sctp/sm_make_chunk.c
-@@ -1198,6 +1198,41 @@ nodata:
+@@ -1198,6 +1198,43 @@ nodata:
  	return retval;
  }
  
@@ -163,9 +163,9 @@ index 7f0bf79..185cf1c 100644
 +					const struct sctp_transport *transport)
 +{
 +	struct sctp_chunk *retval;
-+	__u32 lhs;
-+	__u32 rhs;
-+	__u32 sndbuf;
++	u32 lhs;
++	u32 rhs;
++	u8 sndbuf_percent;
 +
 +	lhs = asoc->outqueue.out_qlen + asoc->outqueue.outstanding_bytes;
 +	rhs = min(asoc->peer.rwnd, transport->cwnd);
@@ -176,9 +176,12 @@ index 7f0bf79..185cf1c 100644
 +		goto nodata;
 +	}
 +
-+	sndbuf = htonl(lhs - rhs);
++	/* Only 1 byte. No need of htons() */
++	sndbuf_percent = (u8)((((u64)(lhs - rhs)) * 100) / asoc->sndbuf_used);
++
++	/* Put the send buffer percentage into the flags field */
 +	retval = sctp_make_control(asoc, SCTP_CID_SNDBUF_ADV,
-+			0, sizeof(__u32), GFP_ATOMIC);
++			sndbuf_percent, 0, GFP_ATOMIC);
 +
 +	if (!retval)
 +		goto nodata;
@@ -187,7 +190,6 @@ index 7f0bf79..185cf1c 100644
 +	 * what transport it belongs to.
 +	 */
 +	retval->transport = (struct sctp_transport *) transport;
-+	sctp_addto_chunk(retval, sizeof(__u32), &sndbuf);
 +
 +nodata:
 +	return retval;
