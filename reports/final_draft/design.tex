@@ -69,8 +69,11 @@
 
   \item Network Flow - A sequence of packets in a transport connection.
 
-  \item Qdisc (Queueing Discipline) - An algorithm that manages the queue of a device,
-    either egress or ingress. It can be either be classless or classful.
+  \item Qdisc (Queueing Discipline) - An algorithm that manages the queue of a
+    device, either egress or ingress. It can be either be classless or classful.
+    Examples of classless qdiscs include FIFO, Token Bucket Filter (TBF) and
+    Stochastic Fair Queuing (SFQ).
+    Hierarchy Token Bucket (HTB) is one of the classful qdiscs.
 
   \item Classes - Some qdiscs can contain classes, which contain further qdiscs - traffic
        may  then  be enqueued in any of the inner qdiscs, which are within the

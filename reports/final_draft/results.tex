@@ -11,5 +11,50 @@ expect our method of classification can yield better results in reducing
 average flow completion time in the above case.
 
 \section{Test Results}
+\begin{figure}[h]
+  \centering
+  \begin{gnuplot}[terminal=cairolatex]
+    set xlabel 'Time (s)'
+    set ylabel 'Percentage Send buffer Used\vspace{0.5cm}'
+    set format y '%.0s'
+    set key off
+    set xrange [0:315]
+    plot 'data/deep_tbf.dat' using ($1-5):2 lw 2 with lines,'data/prasad_tbf.dat' using ($1-5):2 lw 2 with lines
+  \end{gnuplot}
+  \caption{Percentage send buffer variation with 2 flows each having duration of
+    300 seconds using the Token Bucket Filter qdisc with rate limited to
+    1mbit/sec}
+  \label{fig:tbf}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \begin{gnuplot}[terminal=cairolatex]
+    set xlabel 'Time (s)'
+    set ylabel 'Percentage Send buffer Used\vspace{0.5cm}'
+    set format y '%.0s'
+    set key off
+    set xrange [0:310]
+    plot 'data/deep_sfq.dat' using ($1-80): 2 lw 2 with lines,'data/prasad_sfq.dat' using ($1-80): 2 lw 2 with lines
+  \end{gnuplot}
+  \caption{Percentage send buffer variation with 2 flows each having duration of
+    300 seconds using Stochastic Fair Queuing qdisc with rate limited to
+    1mbit/sec}
+  \label{fig:sfq}
+\end{figure}
+
+\clearpage
 
 \section{Explanation of Test Results}
+In figure \ref{fig:tbf}, one of the flows uses majority of the bandwidth for a
+specific period of time during which the percentage send buffer occupancy of
+the other host remains almost constant. On the whole, one of the end hosts
+utilized four times the bandwidth utilized by the other end host.
+
+In figure \ref{fig:sfq}, the bandwidth was shared equally between both the
+flows. The percentage send buffer occupancy of both the hosts fluctuated
+periodically during the test period.
+
+SFQ is known to fail with a large number of flows. On testing with 4000 flows,
+SFQ ensured that 94\% of the flows received equal bandwidth.
+TODO: Testing with the modified kernel.
