@@ -89,8 +89,8 @@
 \begin{frame}[fragile]
 \frametitle{\insertsection}
   \begin{itemize}
-    \item Every SCTP packet having a DATA chunk contains the
-      send buffer occupancy percentage chunk as the first chunk.
+    \item Every SCTP packet having a DATA chunk contains the percentage
+      send buffer occupancy chunk as the first chunk.
     \item Traffic controller classification required each packet to have
       the send buffer occupancy information.
   \end{itemize}
@@ -184,10 +184,8 @@
     \item A patch implementing the SCTP send buffer advertisement was created for
       Linux kernel \texttt{v4.6-rc4}.
     \item The send buffer advertisement chunk type value was set to 150.
-    \item A kernel timer was added corresponding to each SCTP association
-      (within the \texttt{struct sctp\_association}).
-    \item A state table was created for this chunk, specifying the states in which
-      the send buffer advertisement chunk should be generated and sent.
+    \item Previous design: A state table was created for this chunk, specifying the states in
+      which the send buffer advertisement chunk should be generated and sent.
   \end{itemize}
 \end{frame}
 
@@ -200,6 +198,23 @@
   \end{itemize}
   AIM - create a classification hierarchy which works better than the existing
   qdiscs.
+
+  \begin{tikzpicture}[scale=0.7]
+    \tiny
+    \node{1:0}
+    child { node {1:1} }
+    child { node {1:2}
+      child { node {1:0010} }
+      child { node {1:1020} }
+      child { node {1:2030} }
+      child { node {1:3040} }
+      child { node {1:4050} }
+      child { node {1:5060} }
+      child { node {1:6070} }
+      child { node {1:7080} }
+      child { node {1:8090} }
+      child { node {1:90100} } };
+  \end{tikzpicture}
 \end{frame}
 
 \section{Results}
@@ -239,12 +254,11 @@
 
 \end{frame}
 
-\section{Work to be completed}
+\section{Work yet to be done}
 \begin{frame}{\insertsection}
   \begin{itemize}
-    \item There are several scheduling algorithms which prioritizes packets based on some
-    criteria. One of these priority based scheduling algorithms can be modified to consider
-    the send buffer information and to improve QoS for high volume flows.
+    \item Debugging the Linux kernel implementation of the current design.
+    \item Testing the implementation with the proposed classification hierarchy.
   \end{itemize}
 \end{frame}
 
