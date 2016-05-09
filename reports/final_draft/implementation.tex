@@ -98,3 +98,22 @@ The Hierarchy Token Bucket classful queuing discipline was used to classify the
 traffic into 11 classes, one of which is the default class used for non-SCTP
 packets. The remaining 10 classes correspond to the send buffer occupancy
 ranges of size 10.
+\begin{figure}
+  \begin{tikzpicture}
+    \small
+    \node{1:0}
+    child { node {1:1} }
+    child { node {1:2}
+      child { node {1:0010} }
+      child { node {1:1020} }
+      child { node {1:2030} }
+      child { node {1:3040} }
+      child { node {1:4050} }
+      child { node {1:5060} }
+      child { node {1:6070} }
+      child { node {1:7080} }
+      child { node {1:8090} }
+      child { node {1:90100} } };
+  \end{tikzpicture}
+  \caption{Hierarchy of classes}
+\end{figure}
