@@ -1,0 +1,42 @@
+#!/bin/bash
+
+tc qdisc del dev eth0 root handle 1: htb default 1
+tc qdisc add dev eth0 root handle 1: htb default 1
+tc class add dev eth0 parent 1: classid 1:1 htb rate 10mbit
+
+# SCTP classes
+for i in {1..10}
+do
+  tc class add dev eth0 parent 1: classid 1:"${i}0" htb rate "$i"mbit ceil "$i"mbit
+done
+
+# Default class
+tc qdisc add dev eth0 parent 1:1 handle 5: sfq perturb 10
+
+# SFQ!!!
+for i in {10..100..10}
+do
+  tc qdisc add dev eth0 parent 1:"$i" handle "$i": sfq perturb 10
+done
+
+# Match Protocol field SCTP = 0x84
+#tc filter add dev eth0 protocol ip parent 1:0 u32 \
+#  match ip protocol 0x84 0xff flowid 1:2
+  #match u16 0x0084 0x00ff at 8 flowid 1:2
+
+# Send buffer value
+for i in {1..10}
+do
+  tc filter add dev eth0 protocol ip parent 1:0 prio $((11-i)) u32 \
+    match ip protocol 0x84 0xff \
+    match u8 0x96 0xff at nexthdr+12 \
+    flowid 1:"${i}0"
+    #match u8 "0x0${i}" 0xff at nexthdr+13 \
+    #match u16 "0x960$i" 0xffff at nexthdr+12 \
+done
+
+#tc filter add dev eth0 protocol ip parent 1:0 prio 1 u32 \
+#  match ip protocol 0x84 0xff \
+#  match u16 0x960a 0xffff at nexthdr+12 flowid 1:100
+
+watch tc -s qdisc ls dev eth0
