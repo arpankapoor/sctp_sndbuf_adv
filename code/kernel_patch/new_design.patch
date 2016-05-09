@@ -1,0 +1,134 @@
+diff --git a/include/linux/sctp.h b/include/linux/sctp.h
+index a9414fd..3719e20 100644
+--- a/include/linux/sctp.h
++++ b/include/linux/sctp.h
+@@ -102,6 +102,9 @@ typedef enum {
+ 	/* AUTH Extension Section 4.1 */
+ 	SCTP_CID_AUTH			= 0x0F,
+ 
++	/* SNDBUF_ADV */
++	SCTP_CID_SNDBUF_ADV		= 0x96,
++
+ 	/* PR-SCTP Sec 3.2 */
+ 	SCTP_CID_FWD_TSN		= 0xC0,
+ 
+diff --git a/include/net/sctp/sm.h b/include/net/sctp/sm.h
+index efc0174..85aad52 100644
+--- a/include/net/sctp/sm.h
++++ b/include/net/sctp/sm.h
+@@ -235,6 +235,8 @@ struct sctp_chunk *sctp_make_heartbeat_ack(const struct sctp_association *,
+ 				      const struct sctp_chunk *,
+ 				      const void *payload,
+ 				      const size_t paylen);
++struct sctp_chunk *sctp_make_sndbuf_adv(const struct sctp_association *,
++					const struct sctp_transport *);
+ struct sctp_chunk *sctp_make_op_error(const struct sctp_association *,
+ 				 const struct sctp_chunk *chunk,
+ 				 __be16 cause_code,
+diff --git a/net/sctp/chunk.c b/net/sctp/chunk.c
+index 958ef5f..2dec754 100644
+--- a/net/sctp/chunk.c
++++ b/net/sctp/chunk.c
+@@ -182,9 +182,10 @@ struct sctp_datamsg *sctp_datamsg_from_user(struct sctp_association *asoc,
+ 	/* This is the biggest possible DATA chunk that can fit into
+ 	 * the packet
+ 	 */
+-	max_data = (asoc->pathmtu -
++	max_data = ((asoc->pathmtu -
+ 		sctp_sk(asoc->base.sk)->pf->af->net_header_len -
+-		sizeof(struct sctphdr) - sizeof(struct sctp_data_chunk)) & ~3;
++		sizeof(struct sctphdr) - sizeof(struct sctp_data_chunk)) & ~3)
++		- 4;
+ 
+ 	max = asoc->frag_point;
+ 	/* If the the peer requested that we authenticate DATA chunks
+diff --git a/net/sctp/output.c b/net/sctp/output.c
+index 9844fe5..6cdaaf5 100644
+--- a/net/sctp/output.c
++++ b/net/sctp/output.c
+@@ -272,12 +272,27 @@ static sctp_xmit_t __sctp_packet_append_chunk(struct sctp_packet *packet,
+ {
+ 	sctp_xmit_t retval = SCTP_XMIT_OK;
+ 	__u16 chunk_len = WORD_ROUND(ntohs(chunk->chunk_hdr->length));
++	int add_sndbuf_chunk = 0;
++
++	/* If given packet is empty and given chunk is the first data chunk,
++	 * we should also append the send buffer advertisement chunk */
++	add_sndbuf_chunk = sctp_packet_empty(packet) &&
++		sctp_chunk_is_data(chunk);
+ 
+ 	/* Check to see if this chunk will fit into the packet */
+-	retval = sctp_packet_will_fit(packet, chunk, chunk_len);
++	retval = sctp_packet_will_fit(packet, chunk, chunk_len +
++			(add_sndbuf_chunk ? 4 : 0));
+ 	if (retval != SCTP_XMIT_OK)
+ 		goto finish;
+ 
++	if (add_sndbuf_chunk) {
++		/* Append SNBUF_ADV chunk */
++		__sctp_packet_append_chunk(packet,
++				sctp_make_sndbuf_adv(packet->transport->asoc,
++					packet->transport));
++	}
++
++
+ 	/* We believe that this chunk is OK to add to the packet */
+ 	switch (chunk->chunk_hdr->type) {
+ 	case SCTP_CID_DATA:
+diff --git a/net/sctp/outqueue.c b/net/sctp/outqueue.c
+index 084718f..f982239 100644
+--- a/net/sctp/outqueue.c
++++ b/net/sctp/outqueue.c
+@@ -851,6 +851,7 @@ static int sctp_outq_flush(struct sctp_outq *q, int rtx_timeout, gfp_t gfp)
+ 
+ 		case SCTP_CID_SACK:
+ 		case SCTP_CID_HEARTBEAT:
++		case SCTP_CID_SNDBUF_ADV:
+ 		case SCTP_CID_SHUTDOWN:
+ 		case SCTP_CID_ECN_ECNE:
+ 		case SCTP_CID_ASCONF:
+diff --git a/net/sctp/sm_make_chunk.c b/net/sctp/sm_make_chunk.c
+index 56f364d..43aff38 100644
+--- a/net/sctp/sm_make_chunk.c
++++ b/net/sctp/sm_make_chunk.c
+@@ -1198,6 +1198,40 @@ nodata:
+ 	return retval;
+ }
+ 
++/* Make a SNDBUF_ADV chunk.  */
++struct sctp_chunk *sctp_make_sndbuf_adv(const struct sctp_association *asoc,
++					const struct sctp_transport *transport)
++{
++	struct sctp_chunk *retval;
++	u32 lhs;
++	u32 rhs;
++	u8 sndbuf_percent_by_ten = 0;
++
++	lhs = asoc->outqueue.out_qlen + asoc->outqueue.outstanding_bytes;
++	rhs = min(asoc->peer.rwnd, transport->cwnd);
++
++	/* Only 1 byte. No need of htons() */
++	if (lhs > rhs) {
++		sndbuf_percent_by_ten = (u8)((((u64)(lhs - rhs)) * 10) /
++				asoc->sndbuf_used);
++	}
++
++	/* Put the send buffer percentage into the flags field */
++	retval = sctp_make_control(asoc, SCTP_CID_SNDBUF_ADV,
++			sndbuf_percent_by_ten, 0, GFP_ATOMIC);
++
++	if (!retval)
++		goto nodata;
++
++	/* Cast away the 'const', as this is just telling the chunk
++	 * what transport it belongs to.
++	 */
++	retval->transport = (struct sctp_transport *) transport;
++
++nodata:
++	return retval;
++}
++
+ /* Create an Operation Error chunk with the specified space reserved.
+  * This routine can be used for containing multiple causes in the chunk.
+  */
