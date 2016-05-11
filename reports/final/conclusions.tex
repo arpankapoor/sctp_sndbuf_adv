@@ -1,4 +1,16 @@
 \chapter{Conclusion}
-We expect that the use of send buffer occupancy advertisement in
-traffic control may not give better results than some of the existing queuing
-algorithms, such as SFQ.
+
+Send buffer advertisement was implemented in Linux kernel version 4.6. This
+information was used to classify packets to implement fair sharing of
+bandwidth. Our implementation was based on a modified version of the Stochastic
+Fairness Queuing(SFQ), qdisc in the linux kernel.
+
+Our implementation gives a better standard deviation of bandwidth as compared to
+the standard SFQ implementation with multiple flows. However, the computation
+involved in our implementation degrades the average bandwidth when compared to
+the standard SFQ implementation.
+
+We expect that a hardware implementation of the classifier(like an Application
+Specific Integrated Circuit) can significantly
+decrease the computation time required and hence obtaining a higher average
+bandwidth.

@@ -75,6 +75,14 @@
     Stochastic Fair Queuing (SFQ).
     Hierarchy Token Bucket (HTB) is one of the classful qdiscs.
 
+  \item Stochastic Fair Queueing (SFQ) - A classless queueing discipline that
+    classifies the packets based on flows and then assigns to a hash bucket.
+    Each flow is identified by its source address, destination address and the
+    source port.
+    Ideally each bucket should represent a unique flow, though
+    multiple flows may get hashed to the same bucket especially when there are
+    large number of flows.
+
   \item Classes - Some qdiscs can contain classes, which contain further qdiscs - traffic
        may  then  be enqueued in any of the inner qdiscs, which are within the
        classes.
@@ -136,7 +144,9 @@ returning an ERROR chunk, the highest-order 2 bits of the Chunk Type of this
 chunk should be \texttt{10} (as explained in section~\ref{2bits}).
 This limits the choice of the Chunk Type value between 128 and 190.
 
-Each SCTP packet contains this chunk as the first chunk.
+Each SCTP packet (and in turn every IP packet) contains this chunk as the first chunk.
+Since SCTP has path MTU detection, each SCTP packet fits into exactly 1 IP
+packet.
 The total size of this chunk is 4 bytes, which is 0.26\% of a typical
 1500 byte packet.
 

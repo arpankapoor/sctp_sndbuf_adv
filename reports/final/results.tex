@@ -6,7 +6,7 @@ senders and multiple receivers. Multiple flows were created and the
 bottleneck between the two Raspberry Pis were fully utilized. The aim
 was to classify the flows according to the bandwidth requirements. The
 TBF qdisc did not ensure fair sharing of bandwidth. The SFQ qdisc gives
-very good performance but fails for high number of flows \cite{lartc}. We
+very good performance but degrades for high number of flows \cite{lartc}. We
 expect our method of classification can yield better results in reducing
 average flow completion time in the above case.
 
@@ -43,6 +43,35 @@ average flow completion time in the above case.
   \label{fig:sfq}
 \end{figure}
 
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c | c | c|}
+    \hline
+    Number of flows & Send buffer based hierarchy & SFQ \\ \hline
+    20 & 2909.75 & 3651.0 \\
+    200 & 296.53 & 365.65 \\
+    1000 & 64.195 & 76.0317 \\
+    2000 & 31.85 & 52.028 \\ \hline
+  \end{tabular}
+  \caption{Average bandwidth (kbits/sec) with different number of flows, each
+    lasting 300 seconds}
+  \label{table:1}
+\end{table}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c | c | c|}
+    \hline
+    Number of flows & Send buffer based hierarchy & SFQ \\ \hline
+    20 & 507.807 & 671.027 \\
+    200 & 63.959 & 124.025 \\
+    1000 & 29.193 & 107.742 \\
+    2000 & 50.55 & 288.567 \\ \hline
+  \end{tabular}
+  \caption{Standard deviation in bandwidth (kbits/sec)}
+  \label{table:2}
+\end{table}
+
 \clearpage
 
 \section{Explanation of Test Results}
@@ -55,5 +84,17 @@ In figure \ref{fig:sfq}, the bandwidth was shared equally between both the
 flows. The percentage send buffer occupancy of both the hosts fluctuated
 periodically during the test period.
 
-SFQ is known to fail with a large number of flows. On testing with 4000 flows,
-SFQ ensured that 94\% of the flows received equal bandwidth.
+The bandwidth observed using our implementation (table \ref{table:1}) was lesser than
+the standard SFQ. This reduction can be mainly attributed to the overhead imposed by
+the computation involved in classifying the packets based on send buffer
+occupancy percentages. The additional overhead of 4 bytes per SCTP packet for
+the send buffer chunk also affects the usable bandwidth.
+
+As the number of flows increase, the probability of two flows hashing to the
+same bucket also increases. This in turn increases the queuing delay for each of
+the flows. In a standard SFQ implementation, there is no explicit indicator for
+flows starved of bandwidth. Our implementation ensures that flows starved of
+bandwidth are assigned a high priority leaf in the classification scheme.
+Further each flow classified into a particular leaf is still fairly treated
+owing to the SFQ qdisc in the leaf. This causes our implementation to have a
+lesser variance in the bandwidth compared to the standard SFQ implementation.
