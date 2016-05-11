@@ -1,0 +1,36 @@
+\chapter{Introduction}
+Stream Control Transport Protocol (SCTP) is a reliable transport protocol
+designed to transport Public Switched Telephone Network (PSTN) signaling
+messages over IP networks, but is capable of broader applications.
+Unlike TCP, SCTP offers sequenced delivery of user messages within multiple
+unidirectional logical channels called streams.
+Each SCTP endpoint is represented as a set of destination transport addresses,
+one of which is the primary address. If the primary address becomes unreachable
+SCTP chooses another destination transport address to route the messages
+thereafter. This provides network-level fault tolerance and is called
+multi-homing.
+It also employs a security cookie mechanism during association initialization
+to provide resistance to flooding and masquerade attacks.
+
+Advertising the amount of backlogged data present in the sender's buffer can
+help network operators evaluate the end-to-end performance of a connection
+in a better way than that with the existing passive measurements like
+receive window and congestion window.
+This information can also be used to infer whether a connection is limited
+by the network or the application.
+
+\section{Problem Statement}
+To propose a scheme to advertise send buffer occupancy information in SCTP,
+implement it in the Linux kernel and study the performance of the same in
+classifying the network flows in a congested network.
+
+\section{Literature Survey}
+RFC 3286 \cite{rfc3286} provides a high level introduction to the capabilities
+supported by SCTP, while RFC 4960 \cite{rfc4960} describes the complete
+protocol. Agache and Raiciu \cite{tcp-sndbufadv} propose a scheme to advertise
+send buffer occupancy in TCP. \cite{budigerelinux} was used to study the state
+machine employed in the Linux SCTP implementation. It was also used to
+understand the SCTP packet flow within the kernel. \cite{lartc} provided with
+an overview of the traffic control and routing mechanisms in the Linux kernel,
+along with the userspace tools available for shaping and controlling the
+traffic.

@@ -1,0 +1,54 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[english]{babel}
+\usepackage{biblatex}
+\usepackage{bytefield}
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\usepackage[T1]{fontenc}
+\usepackage[top=1.2in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage[cleanup]{gnuplottex}
+\usepackage{graphicx}
+\usepackage{hyperref}
+%\usepackage{lmodern}
+\usepackage{tikz}
+
+\usetikzlibrary{chains,scopes}
+\hypersetup{
+  hidelinks,
+  pdftitle={SCTP Sendbuffer Advertisement},
+  pdfauthor={Arpan Kapoor, Deepak Sirone J, K Prasad Krishnan},
+  pdfsubject={Project Report},
+  pdfkeywords={project, report}
+}
+
+\addbibresource{./ref.bib}
+
+\begin{document}
+
+\pagenumbering{roman}
+\include{title}
+\setcounter{page}{2}
+\include{acknow}
+\include{declaration}
+\include{certificate}
+\include{abstract}
+
+\setcounter{page}{6}
+\tableofcontents
+\listoffigures
+%\listoftables
+
+\newpage
+\pagenumbering{arabic}
+
+\include{introduction}
+\include{design}
+\include{implementation}
+\include{results}
+\include{conclusions}
+
+\addcontentsline{toc}{chapter}{Bibliography}
+\nocite{*}
+\printbibliography
+
+\end{document}
