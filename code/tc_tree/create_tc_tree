@@ -1,13 +1,15 @@
 #!/bin/bash
 
 tc qdisc del dev eth0 root handle 1: htb default 1
+tc qdisc del dev eth0 root handle 1: sfq perturb 10
 tc qdisc add dev eth0 root handle 1: htb default 1
-tc class add dev eth0 parent 1: classid 1:1 htb rate 10mbit
+tc class add dev eth0 parent 1: classid 1:1 htb rate 100mbit
 
 # SCTP classes
 for i in {1..10}
 do
-  tc class add dev eth0 parent 1: classid 1:"${i}0" htb rate "$i"mbit ceil "$i"mbit
+  tc class add dev eth0 parent 1: classid 1:"${i}0" htb rate 100mbit
+  #ceil "$i"mbit
 done
 
 # Default class

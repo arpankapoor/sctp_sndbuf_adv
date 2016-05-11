@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+import math
+import sys
+
+
+def calculate_avg_and_deviation(fname, trim_percent=1):
+    with open(fname) as f:
+        lst = [float(line) for line in f]
+
+    stidx = len(lst)//100
+    lst = lst[stidx:len(lst)-stidx]
+
+    avg = sum(lst)/len(lst)
+
+    var = 0
+    for value in lst:
+        var += (avg - value)**2
+
+    return avg, math.sqrt(var/(len(lst) - 1))
+
+
+if __name__ == '__main__':
+    print(calculate_avg_and_deviation(sys.argv[1]))

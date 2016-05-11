@@ -1,0 +1,25 @@
+#!/bin/bash
+
+for q in htb sfq
+do
+  for i in 10 100 500 1000
+  do
+    for name in deepak prasad
+    do
+      fname="$name/out_${q}_2pc_$i"
+      ofname="$name/out_${q}_2pc_${i}_new"
+      lcount=$(grep sender $fname | wc -l)
+
+      stidx=$((i/100))
+      eidx=$((lcount - stidx))
+
+      grep sender "$fname" | \
+        head -n "$eidx" | tail -n "$((eidx - stidx))" | \
+        tr -s ' ' | cut -d ' ' -f 7 > "$ofname"
+    done
+    echo "$q $i"
+    cat "deepak/out_${q}_2pc_${i}_new" "prasad/out_${q}_2pc_${i}_new" > "out_${q}_2pc_${i}"
+    ./calc_variance "out_${q}_2pc_${i}"
+    echo "---"
+  done
+done
